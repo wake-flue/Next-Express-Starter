@@ -2,7 +2,40 @@ const express = require('express');
 const router = express.Router();
 const Todo = require('../models/Todo');
 
-// 获取所有待办事项
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Todo:
+ *       type: object
+ *       required: [title]
+ *       properties:
+ *         _id: 
+ *           type: string
+ *         title:
+ *           type: string
+ *         completed:
+ *           type: boolean
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ */
+
+/**
+ * @swagger
+ * /api/v1/todos:
+ *   get:
+ *     tags: [Todos]
+ *     summary: 获取所有待办事项
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Todo'
+ */
 router.get('/', async (req, res) => {
   try {
     const todos = await Todo.find().sort({ createdAt: -1 });
@@ -13,7 +46,29 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 创建待办事项
+/**
+ * @swagger
+ * /api/v1/todos:
+ *   post:
+ *     tags: [Todos]
+ *     summary: 创建待办事项
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [title]
+ *             properties:
+ *               title:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Todo'
+ */
 router.post('/', async (req, res) => {
   try {
     const { title } = req.body;
@@ -26,7 +81,36 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 更新待办事项
+/**
+ * @swagger
+ * /api/v1/todos/{id}:
+ *   put:
+ *     tags: [Todos]
+ *     summary: 更新待办事项
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               completed:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Todo'
+ */
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -46,7 +130,28 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// 删除待办事项
+/**
+ * @swagger
+ * /api/v1/todos/{id}:
+ *   delete:
+ *     tags: [Todos]
+ *     summary: 删除待办事项
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;

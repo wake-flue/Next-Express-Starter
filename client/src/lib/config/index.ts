@@ -1,7 +1,7 @@
 // API配置
 export const API_CONFIG = {
   // API基础URL
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1',
   
   // API超时时间(ms)
   TIMEOUT: 5000,
