@@ -1,0 +1,37 @@
+## 1. 项目运行环境
+- windows 11, 命令行工具: powershell, 命令之间使用 ';' 分隔
+
+## 2. 项目结构
+- `/client` - React 前端代码
+- `/server` - Node 后端代码
+
+## 3. 命名规范
+- 组件文件: PascalCase (UserProfile.tsx)
+- 工具文件: camelCase (formatDate.ts)
+- 变量: camelCase
+- 常量: UPPER_SNAKE_CASE
+- 组件: PascalCase
+
+## 4. 代码风格
+- 使用 2 空格缩进
+- 最大行长度: 100 字符
+- React: 使用函数组件和 Hooks
+- Node: 使用 async/await, RESTful API
+
+## 5. 核心依赖版本
+### 前端
+- react: ^18.2.0
+- react-dom: ^18.2.0
+- typescript: ^5.0.0
+- vite: ^4.4.0
+- tailwindcss: ^3.3.0
+- axios: ^1.4.0
+- shadcn/ui: ^0.0.4
+
+### 后端
+- node: ^18.0.0
+- express: ^4.18.0
+- typescript: ^5.0.0
+- prisma: ^5.0.0
+- cors: ^2.8.5
+- dotenv: ^16.3.0

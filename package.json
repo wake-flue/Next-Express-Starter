@@ -1,0 +1,33 @@
+{
+  "name": "next-express-starter",
+  "version": "1.0.0",
+  "description": "Next.js + Express Full Stack Template",
+  "private": true,
+  "scripts": {
+    "client:dev": "cd client && npm run dev",
+    "server:dev": "cd server && npm run dev",
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "client:install": "cd client && npm install",
+    "server:install": "cd server && npm install",
+    "install:all": "npm install && npm run client:install && npm run server:install",
+    "client:build": "cd client && npm run build",
+    "server:build": "cd server && npm run build",
+    "build": "npm run client:build && npm run server:build",
+    "client:start": "cd client && npm run start",
+    "server:start": "cd server && npm run start",
+    "start": "concurrently \"npm run server:start\" \"npm run client:start\"",
+    "clean": "rimraf node_modules client/node_modules server/node_modules"
+  },
+  "keywords": [
+    "nextjs",
+    "express",
+    "typescript",
+    "mongodb"
+  ],
+  "author": "wake",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "rimraf": "^5.0.1"
+  }
+} 
