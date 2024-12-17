@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Todo } from '@/types/todo';
-import { todoApi } from '@/apis/todo';
+import { todoApi } from '@/lib/apis/todo';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/ui/card';

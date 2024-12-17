@@ -8,6 +8,9 @@ const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const todosRouter = require('./routes/todos');
+const logsRouter = require('./routes/logs');
+const logger = require('./config/logger');
+const loggerMiddleware = require('./middleware/logger');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,12 +18,13 @@ const API_VERSION = process.env.API_VERSION || 'v1';
 
 // 连接MongoDB
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB连接成功'))
-  .catch(err => console.error('MongoDB连接失败:', err));
+  .then(() => logger.info('MongoDB连接成功'))
+  .catch(err => logger.error('MongoDB连接失败:', err));
 
 // 中间件
 app.use(cors());
 app.use(express.json());
+app.use(loggerMiddleware);
 
 // Swagger文档路由
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -42,15 +46,16 @@ app.get(`/api/${API_VERSION}/docs.json`, (req, res) => {
 
 // API v1 路由
 app.use(`/api/${API_VERSION}/todos`, todosRouter);
+app.use(`/api/${API_VERSION}/logs`, logsRouter);
   
 // 错误处理中间件
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  logger.error('服务器错误:', err);
   res.status(500).json({ error: '服务器内部错误' });
 });
 
 // 启动服务器
 app.listen(PORT, () => {
-  console.log(`服务器运行在 http://localhost:${PORT}`);
-  console.log(`API文档地址: http://localhost:${PORT}/api-docs`);
+  logger.info(`服务器运行在 http://localhost:${PORT}`);
+  logger.info(`API文档地址: http://localhost:${PORT}/api-docs`);
 }); 

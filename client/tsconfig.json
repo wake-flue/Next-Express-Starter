@@ -23,9 +23,9 @@
       "@/*": ["./src/*"],
       "@/components/*": ["./src/components/*"],
       "@/ui/*": ["./src/components/ui/*"], 
-      "@/utils": ["./src/lib/utils.ts"],
+      "@/utils/*": ["./src/utils/*"],
       "@/config": ["./src/lib/config/index.ts"],
-      "@/apis/*": ["./src/lib/apis/*"],
+      "@/apis/*": ["src/lib/apis/*"],
       "@/lib/*": ["./src/lib/*"]
     }
   },
