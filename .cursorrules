@@ -3,6 +3,8 @@
 
 ## 2. 项目结构
 - `/client` - React 前端代码
+- `/client/app` - 页面
+- `/client/components` - 组件
 - `/server` - Node 后端代码
 
 ## 3. 命名规范

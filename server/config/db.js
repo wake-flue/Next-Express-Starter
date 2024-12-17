@@ -1,13 +1,22 @@
-const mongoose = require('mongoose');
+const { MongoClient } = require('mongodb');
+const logger = require('./logger');
 
-const connectDB = async () => {
+let client = null;
+
+async function connectDB() {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    if (!client) {
+      client = new MongoClient(process.env.MONGODB_URI);
+      await client.connect();
+      logger.info('MongoDB connected successfully');
+    }
+    return client.db();
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit(1);
+    logger.error('MongoDB connection error:', error);
+    throw error;
   }
-};
+}
 
-module.exports = connectDB; 
+module.exports = {
+  connectDB,
+}; 

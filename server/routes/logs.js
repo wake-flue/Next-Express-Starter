@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const logger = require('../config/logger');
+const { connectDB } = require('../config/db');
 
 /**
  * @swagger
@@ -140,7 +141,7 @@ router.get('/', async (req, res) => {
     
     // 构建查询条件
     const query = {};
-    if (level) {
+    if (level && level !== 'all') {
       query.level = level;
     }
     if (startTime || endTime) {
@@ -153,8 +154,8 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // 获取MongoDB连接
-    const db = logger.transports.find(t => t instanceof require('winston-mongodb').MongoDB).db;
+    // 获取数据库连接
+    const db = await connectDB();
     const collection = db.collection('logs');
 
     // 执行查询

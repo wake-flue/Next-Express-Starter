@@ -21,12 +21,15 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/ui/*": ["./src/components/ui/*"], 
-      "@/utils/*": ["./src/utils/*"],
-      "@/config": ["./src/lib/config/index.ts"],
-      "@/apis/*": ["src/lib/apis/*"],
-      "@/lib/*": ["./src/lib/*"]
+      "@/app/*": ["app/*"],
+      "@/components/*": ["components/*"],
+      "@/ui/*": ["components/ui/*"], 
+      "@/utils/*": ["utils/*"],
+      "@/config": ["lib/config/index.ts"],
+      "@/apis/*": ["lib/apis/*"],
+      "@/lib/*": ["lib/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/types/*": ["types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

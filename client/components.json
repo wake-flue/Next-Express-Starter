@@ -16,6 +16,8 @@
     "config": "@/config", 
     "types": "@/types",
     "apis": "@/apis",
-    "lib": "@/lib"
+    "lib": "@/lib",
+    "hooks": "@/hooks",
+    "app": "@/app"
   }
 }
