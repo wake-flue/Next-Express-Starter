@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_CONFIG } from 'lib/config';
+import { API_CONFIG } from 'config';
 
 // 创建统一的axios实例
 export const api = axios.create({

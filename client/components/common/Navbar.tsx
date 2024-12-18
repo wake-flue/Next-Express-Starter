@@ -3,19 +3,23 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Github } from 'lucide-react';
+import { Github, LayoutDashboard } from 'lucide-react';
 import { Button } from 'components/ui/button';
 
 export function Navbar() {
   const pathname = usePathname();
 
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string) => {
+    // 对于dashboard下的子路由，当前路径以path开头就认为是激活状态
+    if (path.startsWith('/dashboard')) {
+      return pathname?.startsWith(path);
+    }
+    // 其他路由保持完全匹配
+    return pathname === path;
+  };
 
   const navItems = [
     { path: '/', label: '首页' },
-    { path: '/features', label: '功能' },
-    { path: '/todo', label: '待办事项' },
-    { path: '/log', label: '日志' },
     { path: '/about', label: '关于' },
   ];
 
@@ -58,6 +62,7 @@ export function Navbar() {
 
           {/* Right Side */}
           <div className="flex items-center gap-4">
+            {/* GitHub */}
             <Button
               variant="ghost"
               size="sm"
@@ -72,6 +77,19 @@ export function Navbar() {
                 <Github className="w-4 h-4" />
                 <span>GitHub</span>
               </a>
+            </Button>
+
+            {/* Dashboard Button */}
+            <Button
+              variant={isActive('/dashboard') ? 'default' : 'outline'}
+              size="sm"
+              className="flex items-center gap-2 shadow-sm"
+              asChild
+            >
+              <Link href="/dashboard">
+                <LayoutDashboard className="w-4 h-4" />
+                <span>控制台</span>
+              </Link>
             </Button>
           </div>
         </div>

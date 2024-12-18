@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { COLLECTIONS } = require('../config/db');
 
 const todoSchema = new mongoose.Schema({
   title: {
@@ -26,6 +27,6 @@ todoSchema.pre('save', function(next) {
   next();
 });
 
-const Todo = mongoose.model('Todo', todoSchema);
+const Todo = mongoose.model(COLLECTIONS.TODOS, todoSchema);
 
 module.exports = Todo; 

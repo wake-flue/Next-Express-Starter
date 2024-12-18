@@ -1,4 +1,4 @@
-import { api } from '../axios';
+import { api } from 'lib/axios';
 import type { LogLevel } from '@/utils/logger';
 
 // 日志条目接口
@@ -32,6 +32,8 @@ export interface ILogsApi {
   query(params: ILogQueryParams): Promise<ILogQueryResponse>;
 }
 
+const serviceLogsRequestUrl = '/service-logs';
+
 // 日志API实现
 export const logsApi: ILogsApi = {
   /**
@@ -40,7 +42,7 @@ export const logsApi: ILogsApi = {
    */
   async batchSend(logs: ILogEntry[]): Promise<void> {
     try {
-      await api.post(`/logs`, { logs });
+      await api.post(serviceLogsRequestUrl, { logs });
     } catch (error) {
       console.error('Failed to send logs:', error);
       throw error;
@@ -53,10 +55,10 @@ export const logsApi: ILogsApi = {
    */
   async query(params: ILogQueryParams): Promise<ILogQueryResponse> {
     try {
-      const { data } = await api.get('/logs', { params });
+      const { data } = await api.get(serviceLogsRequestUrl, { params });
       return data;
     } catch (error) {
-      console.error('Failed to query logs:', error);
+      console.error('Failed to query service logs:', error);
       throw error;
     }
   }

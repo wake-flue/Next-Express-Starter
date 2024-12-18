@@ -15,7 +15,7 @@ app.use(morgan('dev'));
 app.use(loggerMiddleware);
 
 // 路由
-app.use('/api/v1/logs', require('./routes/logs'));
+app.use('/api/v1/service-logs', require('./routes/service-logs'));
 
 // 错误处理
 app.use((err, req, res, next) => {

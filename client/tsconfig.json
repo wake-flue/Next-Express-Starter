@@ -22,11 +22,11 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/app/*": ["app/*"],
+      "@/apis/*": ["lib/apis/*"],
       "@/components/*": ["components/*"],
       "@/ui/*": ["components/ui/*"], 
       "@/utils/*": ["utils/*"],
-      "@/config": ["lib/config/index.ts"],
-      "@/apis/*": ["lib/apis/*"],
+      "@/config": ["config/index.ts"],
       "@/lib/*": ["lib/*"],
       "@/hooks/*": ["hooks/*"],
       "@/types/*": ["types/*"]

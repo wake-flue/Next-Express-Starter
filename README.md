@@ -5,20 +5,25 @@
 ## 技术栈
 
 ### 前端
-- Next.js 15.1.0
-- React 19
-- TypeScript
-- TailwindCSS 3.4
-- Shadcn/UI
-- Axios
-- React Query (TanStack Query)
+- React ^18.2.0
+- React DOM ^18.2.0
+- TypeScript ^5.0.0
+- Vite ^4.4.0
+- TailwindCSS ^3.3.0
+- Shadcn/UI ^0.0.4
+- Axios ^1.4.0
 
 ### 后端
-- Node.js
-- Express 4.18
-- MongoDB
-- Mongoose 8.9
-- dotenv
+- Node.js ^18.0.0
+- Express ^4.18.0
+- TypeScript ^5.0.0
+- CORS ^2.8.5
+- dotenv ^16.3.0
+- Mongoose ^8.9.0
+- Winston ^3.17.0
+- Winston-MongoDB ^6.0.0
+- Swagger-jsdoc ^6.2.8
+- Swagger-ui-express ^5.0.1
 
 ## 快速开始
 
@@ -79,16 +84,21 @@ npm run dev
 ```
 Next-Express-Starter/
 ├── client/                # 前端代码
-│   ├── app/              # Next.js 应用目录
-│   ├── components/       # React 组件
-│   ├── lib/             # 工具函数和配置
-│   └── public/          # 静态资源
+│   ├── app/              # Pages
+│   ├── components/       # Components
+│   ├── lib/             # Libraries
+│   │   ├── apis/        # API
+│   │   ├── hooks/       # Hooks
+│   │   └── utils/       # Utilities
+│   └── types/           # Types
 │
 └── server/              # 后端代码
     ├── routes/          # 路由
     ├── models/          # Mongoose 模型
     ├── middleware/      # 中间件
-    └── utils/           # 工具函数
+    ├── config/          # 配置文件
+    ├── logs/           # 日志文件
+    └── utils/          # 工具函数
 ```
 
 ## 环境配置
@@ -102,6 +112,8 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```env
 PORT=3001
 MONGODB_URI=mongodb://localhost:27017/your_database
+LOG_LEVEL=info
+ENABLE_SWAGGER=true
 ```
 
 ## 开发规范
@@ -118,7 +130,6 @@ MONGODB_URI=mongodb://localhost:27017/your_database
 - 最大行长度：100 字符
 - React：使用函数组件和 Hooks
 - 后端：使用 async/await，RESTful API
-- 使用 Mongoose Schema 定义数据模型
 
 ### Git 提交规范
 提交信息格式：`<type>(<scope>): <description>`
@@ -142,3 +153,16 @@ MONGODB_URI=mongodb://localhost:27017/your_database
 ## 许可证
 
 MIT
+
+## 功能特性
+
+### API 文档
+- 使用 Swagger UI 提供交互式 API 文档
+- 访问地址：`http://localhost:3001/api-docs`
+- 支持 API 测试和调试
+
+### 日志系统
+- 使用 Winston 进行日志管理
+- 支持控制台和 MongoDB 双重输出
+- 日志级别：error、warn、info、debug
+- 自动记录 API 请求和响应

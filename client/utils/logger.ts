@@ -1,4 +1,4 @@
-import { logsApi, type ILogEntry } from 'lib/apis/logs';
+import { logsApi, type ILogEntry } from '@/apis/service-logs';
 
 // 日志级别定义
 export enum LogLevel {

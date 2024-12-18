@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { LogLevel } from '@/utils/logger';
-import { logsApi } from 'lib/apis/logs';
+import { logsApi } from '@/apis/service-logs';
 
 // 日志级别图标映射
 const levelIcons = {

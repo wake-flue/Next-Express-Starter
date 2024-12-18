@@ -1,27 +1,33 @@
-## 1. 项目运行环境
-- windows 11, 命令行工具: powershell, 命令之间使用 ';' 分隔
+## 1. Project Environment
+- Windows 11, Command line tool: PowerShell, commands separated by ';'
 
-## 2. 项目结构
-- `/client` - React 前端代码
-- `/client/app` - 页面
-- `/client/components` - 组件
-- `/server` - Node 后端代码
+## 2. Project Structure 
+- `/client` - React frontend code
+- `/client/app` - Pages
+- `/client/components` - Components
+- `/client/hooks` - Hooks
+- `/client/utils` - Utilities
+- `/client/lib` - Libraries
+- `/client/lib/apis` - API
+- `/client/types` - Types
+- `/client/public` - Public assets
+- `/server` - Node backend code
 
-## 3. 命名规范
-- 组件文件: PascalCase (UserProfile.tsx)
-- 工具文件: camelCase (formatDate.ts)
-- 变量: camelCase
-- 常量: UPPER_SNAKE_CASE
-- 组件: PascalCase
+## 3. Naming Conventions
+- Component files: PascalCase (UserProfile.tsx)
+- Utility files: camelCase (formatDate.ts)
+- Variables: camelCase
+- Constants: UPPER_SNAKE_CASE
+- Components: PascalCase
 
-## 4. 代码风格
-- 使用 2 空格缩进
-- 最大行长度: 100 字符
-- React: 使用函数组件和 Hooks
-- Node: 使用 async/await, RESTful API
+## 4. Code Style
+- Use 2 spaces for indentation
+- Maximum line length: 100 characters
+- React: Use function components and Hooks
+- Node: Use async/await, RESTful API
 
-## 5. 核心依赖版本
-### 前端
+## 5. Core Dependencies
+### Frontend
 - react: ^18.2.0
 - react-dom: ^18.2.0
 - typescript: ^5.0.0
@@ -30,10 +36,14 @@
 - axios: ^1.4.0
 - shadcn/ui: ^0.0.4
 
-### 后端
+### Backend
 - node: ^18.0.0
 - express: ^4.18.0
 - typescript: ^5.0.0
-- prisma: ^5.0.0
 - cors: ^2.8.5
 - dotenv: ^16.3.0
+- mongoose: ^8.9.0
+- winston: ^3.17.0
+- winston-mongodb: ^6.0.0
+- swagger-jsdoc: ^6.2.8
+- swagger-ui-express: ^5.0.1

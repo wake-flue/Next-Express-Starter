@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const todosRouter = require('./routes/todos');
-const logsRouter = require('./routes/logs');
+const serviceLogsRouter = require('./routes/service-logs');
 const logger = require('./config/logger');
 const loggerMiddleware = require('./middleware/logger');
 
@@ -46,7 +46,7 @@ app.get(`/api/${API_VERSION}/docs.json`, (req, res) => {
 
 // API v1 路由
 app.use(`/api/${API_VERSION}/todos`, todosRouter);
-app.use(`/api/${API_VERSION}/logs`, logsRouter);
+app.use(`/api/${API_VERSION}/service-logs`, serviceLogsRouter);
   
 // 错误处理中间件
 app.use((err, req, res, next) => {

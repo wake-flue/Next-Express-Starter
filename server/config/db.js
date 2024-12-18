@@ -1,22 +1,23 @@
-const { MongoClient } = require('mongodb');
-const logger = require('./logger');
+const mongoose = require('mongoose');
 
-let client = null;
+// 定义集合名称常量
+const COLLECTIONS = {
+  LOGS: 'logs',
+  TODOS: 'todos'
+};
 
-async function connectDB() {
+// 连接数据库
+const connectDB = async () => {
   try {
-    if (!client) {
-      client = new MongoClient(process.env.MONGODB_URI);
-      await client.connect();
-      logger.info('MongoDB connected successfully');
-    }
-    return client.db();
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    return conn;
   } catch (error) {
-    logger.error('MongoDB connection error:', error);
-    throw error;
+    console.error('MongoDB 连接失败:', error);
+    process.exit(1);
   }
-}
+};
 
 module.exports = {
   connectDB,
+  COLLECTIONS
 }; 
