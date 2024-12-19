@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { LogLevel } from '@/utils/logger';
-import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
 import { AlertCircle, AlertTriangle, Info, Bug, RefreshCw } from 'lucide-react';
 
@@ -43,7 +42,7 @@ export function LogsFilter() {
   // 设置快捷时间范围
   const handleQuickTimeRange = (range: string) => {
     const now = new Date();
-    let start = new Date();
+    const start = new Date();
 
     switch (range) {
       case '1h':

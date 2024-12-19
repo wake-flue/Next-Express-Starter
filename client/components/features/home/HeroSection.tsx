@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
-import { ArrowRight, Github, Sparkles, Star, GitBranch, Users, Code2, Rocket } from 'lucide-react';
+import { ArrowRight, Github, Sparkles, Star, GitBranch, Code2, Rocket } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import confetti from 'canvas-confetti';
