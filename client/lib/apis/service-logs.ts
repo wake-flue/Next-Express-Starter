@@ -1,30 +1,5 @@
 import { api } from 'lib/axios';
-import type { LogLevel } from '@/utils/logger';
-
-// 日志条目接口
-export interface ILogEntry {
-  level: LogLevel;
-  message: string;
-  timestamp: string;
-  data?: any;
-  userAgent: string;
-  url: string;
-}
-
-// 日志查询参数接口
-export interface ILogQueryParams {
-  level?: LogLevel;
-  startTime?: string;
-  endTime?: string;
-  page?: number;
-  pageSize?: number;
-}
-
-// 日志查询响应接口
-export interface ILogQueryResponse {
-  total: number;
-  logs: ILogEntry[];
-}
+import { ILogEntry, ILogQueryParams, ILogQueryResponse } from '@/types/log';
 
 // 日志API接口
 export interface ILogsApi {

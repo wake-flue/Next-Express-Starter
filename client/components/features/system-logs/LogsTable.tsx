@@ -7,10 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { LogLevel } from '@/utils/logger';
 import { logsApi } from '@/apis/service-logs';
+import { ILogEntry } from '@/types/log';
 
 // 日志级别图标映射
 const levelIcons = {
@@ -20,7 +21,7 @@ const levelIcons = {
   [LogLevel.DEBUG]: <Bug className="w-4 h-4" />,
 };
 
-// 日志级别样式映射
+// 日志级别��式映射
 const levelStyles = {
   [LogLevel.ERROR]: 'bg-red-100 text-red-800 hover:bg-red-200',
   [LogLevel.WARN]: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
@@ -29,7 +30,7 @@ const levelStyles = {
 };
 
 // 日志详情对话框
-function LogDetailDialog({ log }) {
+function LogDetailDialog({ log }: { log: ILogEntry }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -38,15 +39,18 @@ function LogDetailDialog({ log }) {
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
-        <DialogHeader>
+        <DialogHeader className="pb-2">
           <DialogTitle>日志详情</DialogTitle>
+          <DialogDescription className="text-sm">
+            查看日志的完整信息，包括时间、级别、来源和详细内容
+          </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[600px]">
-          <div className="space-y-4 p-4">
+          <div className="space-y-3 px-2">
             {/* 基本信息 */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <div className="text-sm font-medium text-gray-500">级别</div>
+                <div className="text-xs font-medium text-gray-500">级别</div>
                 <Badge variant="secondary" className={levelStyles[log.level]}>
                   <span className="flex items-center gap-1">
                     {levelIcons[log.level]}
@@ -55,23 +59,23 @@ function LogDetailDialog({ log }) {
                 </Badge>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-500">时间</div>
-                <div>{format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss')}</div>
+                <div className="text-xs font-medium text-gray-500">时间</div>
+                <div className="text-sm">{format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss')}</div>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-500">来源</div>
-                <div>{log.source || '-'}</div>
+                <div className="text-xs font-medium text-gray-500">来源</div>
+                <div className="text-sm">{log.source || '-'}</div>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-500">URL</div>
-                <div className="truncate">{log.url || '-'}</div>
+                <div className="text-xs font-medium text-gray-500">URL</div>
+                <div className="text-sm truncate">{log.url || '-'}</div>
               </div>
             </div>
 
             {/* 消息内容 */}
             <div>
-              <div className="text-sm font-medium text-gray-500 mb-2">消息</div>
-              <div className="bg-gray-50 p-3 rounded-md font-mono text-sm whitespace-pre-wrap">
+              <div className="text-xs font-medium text-gray-500 mb-1">消息</div>
+              <div className="bg-gray-50 p-2 rounded-md font-mono text-sm whitespace-pre-wrap">
                 {log.message}
               </div>
             </div>
@@ -79,8 +83,8 @@ function LogDetailDialog({ log }) {
             {/* 元数据 */}
             {log.metadata && (
               <div>
-                <div className="text-sm font-medium text-gray-500 mb-2">元数据</div>
-                <div className="bg-gray-50 p-3 rounded-md font-mono text-sm">
+                <div className="text-xs font-medium text-gray-500 mb-1">元数据</div>
+                <div className="bg-gray-50 p-2 rounded-md font-mono text-sm">
                   <pre>{JSON.stringify(log.metadata, null, 2)}</pre>
                 </div>
               </div>
@@ -96,13 +100,14 @@ export function LogsTable() {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;
   const pageSize = Number(searchParams.get('pageSize')) || 20;
-  const level = searchParams.get('level') || undefined;
+  const levelParam = searchParams.get('level');
+  const level = levelParam as LogLevel | undefined;
   const startTime = searchParams.get('startTime') || undefined;
   const endTime = searchParams.get('endTime') || undefined;
 
   // 排序状态
   const [sortField, setSortField] = useState('timestamp');
-  const [sortOrder, setSortOrder] = useState('desc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // 获取日志数据
   const { data, isLoading, error } = useQuery({

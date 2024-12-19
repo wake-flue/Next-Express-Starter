@@ -1,4 +1,5 @@
-import { logsApi, type ILogEntry } from '@/apis/service-logs';
+import { logsApi } from '@/apis/service-logs';
+import { ILogEntry } from '@/types/log';
 
 // 日志级别定义
 export enum LogLevel {
@@ -87,10 +88,15 @@ class Logger {
       level,
       message,
       timestamp: new Date().toISOString(),
-      data,
-      userAgent: isBrowser ? navigator.userAgent : 'server',
-      url: isBrowser ? window.location.href : '/'
-    };
+      source: 'frontend',
+      metadata: data,
+      client: {
+        browser: navigator.userAgent,
+        os: navigator.platform,
+        device: 'web',
+        url: window.location.href
+      }
+    } as ILogEntry;
   }
 
   private async processLogQueue(immediateFlush?: boolean) {
