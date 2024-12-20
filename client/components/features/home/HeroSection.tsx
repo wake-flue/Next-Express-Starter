@@ -17,7 +17,7 @@ export function HeroSection() {
       
       // 左下角喷射
       confetti({
-        particleCount: 10,
+        particleCount: 5,
         angle: 60,
         spread: 60,
         origin: { x: 0, y: 1 },
@@ -32,7 +32,7 @@ export function HeroSection() {
       
       // 右下角喷射
       confetti({
-        particleCount: 10,
+        particleCount: 5,
         angle: 120,
         spread: 60,
         origin: { x: 1, y: 1 },
