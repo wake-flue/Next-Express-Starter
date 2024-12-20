@@ -1,17 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const logger = require('../config/logger');
-const Log = require('../models/Log');
-
-// 定义日志操作类型
-const LOG_OPERATIONS = {
-  GET_LOGS: 'GET_LOGS',
-  POST_LOGS: 'POST_LOGS'
-};
+const logController = require('../controllers/logController');
 
 /**
  * @swagger
- * /api/v1/service-logs:
+ * /api/v1/logs:
  *   post:
  *     summary: 接收前端日志
  *     tags: [Logs]
@@ -42,44 +35,11 @@ const LOG_OPERATIONS = {
  *       400:
  *         description: 请求格式错误
  */
-router.post('/', async (req, res) => {
-  try {
-    const { logs } = req.body;
-    
-    if (!Array.isArray(logs)) {
-      return res.status(400).json({ error: '无效的日志格式' });
-    }
-
-    // 批量处理日志
-    const logPromises = logs.map(logData => {
-      const { level, message, error, client, ...rest } = logData;
-      
-      return Log.addLog({
-        level,
-        message,
-        source: 'frontend',
-        error,
-        client,
-        metadata: rest,
-        request: {
-          userAgent: req.get('user-agent'),
-          ip: req.ip,
-          host: req.get('host')
-        }
-      });
-    });
-
-    await Promise.all(logPromises);
-    res.status(200).json({ message: '日志接收成功' });
-  } catch (error) {
-    logger.error('处理前端日志时出错:', { error });
-    res.status(500).json({ error: '服务器内部错误' });
-  }
-});
+router.post('/', logController.addLogs);
 
 /**
  * @swagger
- * /api/v1/service-logs:
+ * /api/v1/logs:
  *   get:
  *     summary: 查询日志
  *     tags: [Logs]
@@ -135,51 +95,6 @@ router.post('/', async (req, res) => {
  *       500:
  *         description: 服务器错误
  */
-router.get('/', async (req, res) => {
-  try {
-    const {
-      level,
-      source,
-      startTime,
-      endTime,
-      status,
-      errorType,
-      search,
-      page,
-      pageSize,
-      sort
-    } = req.query;
-
-    // 使用 Log 模型的查询方法
-    const result = await Log.queryLogs(
-      {
-        level,
-        source,
-        startTime,
-        endTime,
-        status: status ? parseInt(status) : undefined,
-        errorType,
-        search
-      },
-      {
-        page: page ? parseInt(page) : 1,
-        pageSize: pageSize ? parseInt(pageSize) : 20,
-        sort: sort ? JSON.parse(sort) : { timestamp: -1 }
-      }
-    );
-
-    res.json(result);
-    logger.info('查询日志成功', {
-      metadata: {
-        operation: LOG_OPERATIONS.GET_LOGS,
-        query: req.query,
-        count: result.logs.length
-      }
-    });
-  } catch (error) {
-    logger.error('查询日志时出错:', { error });
-    res.status(500).json({ error: '服务器内部错误' });
-  }
-});
+router.get('/', logController.queryLogs);
 
 module.exports = router; 

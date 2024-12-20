@@ -1,4 +1,6 @@
-const logger = require('../config/logger');
+const config = require('../config');
+
+const logger = config.logger;
 
 const loggerMiddleware = (req, res, next) => {
   // 记录请求开始时间

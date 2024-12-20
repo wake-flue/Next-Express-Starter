@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { COLLECTIONS } = require('../config/db');
+const config = require('../config');
+const COLLECTIONS = config.db.collections;
 
 const logSchema = new mongoose.Schema({
   // 基础日志信息
