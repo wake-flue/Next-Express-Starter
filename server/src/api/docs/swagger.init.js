@@ -1,14 +1,14 @@
 /**
  * @swagger
  * tags:
- *   - name: 认证
- *     description: Auth - 用户认证
- *   - name: 用户
- *     description: Users - 用户管理
- *   - name: 待办事项
- *     description: Todo - 待办事项管理
- *   - name: 日志
- *     description: Logs - 系统日志
+ *   - name: Auth
+ *     description: 用户认证
+ *   - name: User
+ *     description: 用户管理
+ *   - name: Todo
+ *     description: 待办事项管理
+ *   - name: Log
+ *     description: 系统日志
  * 
  * components:
  *   schemas:

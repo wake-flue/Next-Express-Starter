@@ -46,7 +46,7 @@ const logController = require('../controllers/logController');
  * /api/v1/logs:
  *   get:
  *     summary: 查询日志
- *     tags: [日志]
+ *     tags: [Log]
  *     parameters:
  *       - in: query
  *         name: level
@@ -137,7 +137,7 @@ router.get('/', logController.getLogs);
  * /api/v1/logs:
  *   post:
  *     summary: 创建日志
- *     tags: [日志]
+ *     tags: [Log]
  *     requestBody:
  *       required: true
  *       content:

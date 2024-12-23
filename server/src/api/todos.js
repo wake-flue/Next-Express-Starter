@@ -32,7 +32,7 @@ const todoController = require('../controllers/todoController');
  * /api/v1/todos:
  *   get:
  *     summary: 获取待办列表
- *     tags: [待办事项]
+ *     tags: [Todo]
  *     parameters:
  *       - in: query
  *         name: completed
@@ -118,7 +118,7 @@ router.get('/', todoController.getTodos);
  * /api/v1/todos:
  *   post:
  *     summary: 创建待办事项
- *     tags: [待办事项]
+ *     tags: [Todo]
  *     requestBody:
  *       required: true
  *       content:
@@ -147,7 +147,7 @@ router.post('/', todoController.createTodo);
  * /api/v1/todos/{id}:
  *   put:
  *     summary: 更新待办事项
- *     tags: [待办事项]
+ *     tags: [Todo]
  *     parameters:
  *       - in: path
  *         name: id
@@ -183,7 +183,7 @@ router.put('/:id', todoController.updateTodo);
  * /api/v1/todos/{id}:
  *   delete:
  *     summary: 删除待办事项
- *     tags: [待办事项]
+ *     tags: [Todo]
  *     parameters:
  *       - in: path
  *         name: id
