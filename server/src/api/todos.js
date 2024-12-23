@@ -13,44 +13,132 @@ const todoController = require('../controllers/todoController');
  *       properties:
  *         _id:
  *           type: string
- *           description: Todo的唯一标识符
+ *           description: 待办事项ID
  *         title:
  *           type: string
- *           description: Todo的标题
+ *           description: 待办事项标题
  *         completed:
  *           type: boolean
- *           description: Todo的完成状态
+ *           description: 完成状态
  *           default: false
  *         createdAt:
  *           type: string
  *           format: date-time
- *           description: Todo的创建时间
+ *           description: 创建时间
  */
 
 /**
  * @swagger
  * /api/v1/todos:
  *   get:
- *     summary: 获取所有待办事项
- *     tags: [Todos]
+ *     summary: 获取待办列表
+ *     tags: [待办事项]
+ *     parameters:
+ *       - in: query
+ *         name: completed
+ *         schema:
+ *           type: boolean
+ *         description: 完成状态筛选
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: 标题搜索
+ *       - in: query
+ *         name: startTime
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: 开始时间
+ *       - in: query
+ *         name: endTime
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *         description: 结束时间
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [createdAt, title]
+ *           default: createdAt
+ *         description: 排序字段
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: 排序方式
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: 页码
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 20
+ *         description: 每页数量
  *     responses:
  *       200:
- *         description: 成功获取待办事项列表
+ *         description: 获取成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     list:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Todo'
+ *                     pageInfo:
+ *                       $ref: '#/components/schemas/PageInfo'
+ *                 message:
+ *                   type: string
+ *                   example: 获取成功
+ *       500:
+ *         description: 服务器错误
  */
-router.get('/', todoController.getAllTodos);
+router.get('/', todoController.getTodos);
 
 /**
  * @swagger
  * /api/v1/todos:
  *   post:
- *     summary: 创建新的待办事项
- *     tags: [Todos]
+ *     summary: 创建待办事项
+ *     tags: [待办事项]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Todo'
+ *             type: object
+ *             required:
+ *               - title
+ *             properties:
+ *               title:
+ *                 type: string
+ *               completed:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: 创建成功
+ *       400:
+ *         description: 参数错误
+ *       500:
+ *         description: 服务器错误
  */
 router.post('/', todoController.createTodo);
 
@@ -59,13 +147,34 @@ router.post('/', todoController.createTodo);
  * /api/v1/todos/{id}:
  *   put:
  *     summary: 更新待办事项
- *     tags: [Todos]
+ *     tags: [待办事项]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: 待办事项ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               completed:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: 更新成功
+ *       400:
+ *         description: 参数错误
+ *       404:
+ *         description: 待办事项不存在
+ *       500:
+ *         description: 服务器错误
  */
 router.put('/:id', todoController.updateTodo);
 
@@ -74,13 +183,21 @@ router.put('/:id', todoController.updateTodo);
  * /api/v1/todos/{id}:
  *   delete:
  *     summary: 删除待办事项
- *     tags: [Todos]
+ *     tags: [待办事项]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
+ *         description: 待办事项ID
+ *     responses:
+ *       200:
+ *         description: 删除成功
+ *       404:
+ *         description: 待办事项不存在
+ *       500:
+ *         description: 服务器错误
  */
 router.delete('/:id', todoController.deleteTodo);
 
