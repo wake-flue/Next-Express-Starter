@@ -2,15 +2,9 @@ const logService = require('../services/logService');
 const ResponseHandler = require('../utils/responseHandler');
 const BaseController = require('./BaseController');
 
-const LOG_OPERATIONS = {
-    GET_LOGS: 'GET_LOGS',
-    CREATE_LOGS: 'CREATE_LOGS'
-};
-
 class LogController extends BaseController {
     constructor() {
         super();
-        // 绑定所有方法到实例
         this.createLogs = this.createLogs.bind(this);
         this.getLogs = this.getLogs.bind(this);
     }
@@ -20,22 +14,12 @@ class LogController extends BaseController {
             const { logs } = req.body;
 
             if (!Array.isArray(logs)) {
-                return ResponseHandler.badRequest(res, '无效的日志格式', {
-                    ...this.formatBaseMetadata(req, LOG_OPERATIONS.CREATE_LOGS),
-                    logsCount: 0,
-                    error: 'Invalid logs format'
-                });
+                return ResponseHandler.badRequest(res, '无效的日志格式');
             }
 
-            return ResponseHandler.success(res, { message: '日志接收成功' }, {
-                ...this.formatBaseMetadata(req, LOG_OPERATIONS.CREATE_LOGS),
-                logsCount: logs.length
-            });
+            return ResponseHandler.success(res, { message: '日志接收成功' });
         } catch (error) {
-            return ResponseHandler.error(res, '服务器内部错误', {
-                ...this.formatBaseMetadata(req, LOG_OPERATIONS.CREATE_LOGS),
-                error
-            });
+            return ResponseHandler.error(res, '服务器内部错误');
         }
     }
 
@@ -65,17 +49,9 @@ class LogController extends BaseController {
             const paginationParams = this.getPaginationParams(query);
             const result = await logService.getLogs(queryParams, paginationParams);
 
-            return ResponseHandler.success(res, result, {
-                ...this.formatBaseMetadata(req, LOG_OPERATIONS.GET_LOGS),
-                queryParams,
-                pagination: this.formatPaginationMetadata(paginationParams, result.total)
-            });
+            return ResponseHandler.success(res, result);
         } catch (error) {
-            return ResponseHandler.error(res, '服务器内部错误', {
-                ...this.formatBaseMetadata(req, LOG_OPERATIONS.GET_LOGS),
-                error,
-                queryParams: req.query
-            });
+            return ResponseHandler.error(res, '服务器内部错误');
         }
     }
 }

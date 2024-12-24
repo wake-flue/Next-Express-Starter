@@ -9,11 +9,16 @@ const loggerMiddleware = (req, res, next) => {
     const requestInfo = {
       method: req.method,
       url: req.originalUrl,
-      status: res.statusCode,
-      duration,
       userAgent: req.get('user-agent') || '',
       ip: req.ip,
       host: req.get('host')
+    };
+
+    const responseInfo = {
+      status: res.statusCode,
+      message: res.message,
+      dataLength: res.data ? res.data.length : 0,
+      duration
     };
 
     const metadata = {
@@ -23,7 +28,7 @@ const loggerMiddleware = (req, res, next) => {
       body: req.method === 'GET' ? undefined : '[FILTERED]'
     };
 
-    LogHandler.logRequest(requestInfo, metadata);
+    LogHandler.logRequest(requestInfo, responseInfo, metadata);
   });
 
   next();

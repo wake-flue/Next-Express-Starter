@@ -44,49 +44,22 @@ class LogHandler {
     };
   }
 
-  static logResponse(status, data, metadata = {}) {
-    const duration = metadata.duration || 0;
-    const message = `Response sent with status ${status} in ${duration}ms`;
+  static logRequest(requestInfo, responseInfo, metadata = {}) {
+    const message = `${requestInfo.method} ${requestInfo.url} ${responseInfo.status} ${responseInfo.duration}ms  [responseLength: ${responseInfo.dataLength}]`;
     
     const logData = {
-      status,
-      duration,
+      requestInfo,
+      responseInfo,
       operation: metadata.operation,
       ...this.formatMetadata(metadata)
     };
 
-    if (status >= 500) {
+    if (responseInfo.status >= 500) {
       logger.error(message, logData);
-    } else if (status >= 400) {
+    } else if (responseInfo.status >= 400) {
       logger.warn(message, logData);
     } else {
       logger.info(message, logData);
-    }
-  }
-
-  static logRequest(requestInfo, metadata = {}) {
-    const message = `${requestInfo.method} ${requestInfo.url} ${requestInfo.status} ${requestInfo.duration}ms`;
-    
-    const logData = {
-      requestInfo: {
-        method: requestInfo.method,
-        url: requestInfo.url,
-        status: requestInfo.status,
-        duration: requestInfo.duration,
-        ip: requestInfo.ip,
-        userAgent: requestInfo.userAgent,
-        host: requestInfo.host
-      },
-      operation: metadata.operation,
-      ...this.formatMetadata(metadata)
-    };
-
-    if (requestInfo.status >= 500) {
-      logger.error(message, logData);
-    } else if (requestInfo.status >= 400) {
-      logger.warn(message, logData);
-    } else {
-      logger.http(message, logData);
     }
   }
 

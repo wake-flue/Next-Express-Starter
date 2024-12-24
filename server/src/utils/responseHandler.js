@@ -1,17 +1,5 @@
-const LogHandler = require('./logHandler');
-
 class ResponseHandler {
-  static formatMetadata(metadata = {}) {
-    return {
-      operation: metadata.operation,
-      requestId: metadata.requestId,
-      userId: metadata.userId,
-      duration: metadata.duration,
-      ...metadata
-    };
-  }
-
-  static formatResponse(success, data = null, message = '', metadata = {}) {
+  static formatResponse(success, data = null, message = '') {
     const response = {
       success,
       message: message || (success ? '操作成功' : '操作失败')
@@ -29,81 +17,27 @@ class ResponseHandler {
     return response;
   }
 
-  static getResponseMetrics(data) {
-    const metrics = {
-      dataLength: 0
-    };
-
-    if (Array.isArray(data)) {
-      metrics.dataLength = data.length;
-    } else if (data && typeof data === 'object') {
-      if (Array.isArray(data.data)) {
-        metrics.dataLength = data.data.length;
-      }
-    }
-
-    return metrics;
-  }
-
-  static success(res, data, metadata = {}) {
-    const start = new Date();
+  static success(res, data) {
     const formattedResponse = this.formatResponse(true, data);
-    const result = res.status(200).json(formattedResponse);
-    const metrics = this.getResponseMetrics(data);
-    
-    LogHandler.logResponse(200, formattedResponse, this.formatMetadata({
-      ...metadata,
-      duration: new Date() - start,
-      responseMetrics: metrics
-    }));
-    
-    return result;
+    return res.status(200).json(formattedResponse);
   }
 
-  static error(res, message, metadata = {}) {
-    const start = new Date();
-    const status = metadata.status || 500;
+  static error(res, message, status = 500) {
     const formattedResponse = this.formatResponse(false, null, message);
-    const result = res.status(status).json(formattedResponse);
-
-    LogHandler.logResponse(status, formattedResponse, this.formatMetadata({
-      ...metadata,
-      duration: new Date() - start,
-      responseMetrics: {
-        dataLength: 0
-      }
-    }));
-
-    return result;
+    return res.status(status).json(formattedResponse);
   }
 
-  static notFound(res, message = '资源未找到', metadata = {}) {
-    return this.error(res, message, this.formatMetadata({
-      ...metadata,
-      status: 404
-    }));
+  static notFound(res, message = '资源未找到') {
+    return this.error(res, message, 404);
   }
 
-  static badRequest(res, message = '请求参数错误', metadata = {}) {
-    return this.error(res, message, this.formatMetadata({
-      ...metadata,
-      status: 400
-    }));
+  static badRequest(res, message = '请求参数错误') {
+    return this.error(res, message, 400);
   }
 
-  static created(res, data, metadata = {}) {
-    const start = new Date();
+  static created(res, data) {
     const formattedResponse = this.formatResponse(true, data, '创建成功');
-    const result = res.status(201).json(formattedResponse);
-    const metrics = this.getResponseMetrics(data);
-
-    LogHandler.logResponse(201, formattedResponse, this.formatMetadata({
-      ...metadata,
-      duration: new Date() - start,
-      responseMetrics: metrics
-    }));
-
-    return result;
+    return res.status(201).json(formattedResponse);
   }
 }
 
