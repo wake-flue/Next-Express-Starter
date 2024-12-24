@@ -9,7 +9,7 @@
  *     description: 待办事项管理
  *   - name: Log
  *     description: 系统日志
- * 
+ *
  * components:
  *   schemas:
  *     ApiResponse:
@@ -24,7 +24,7 @@
  *         message:
  *           type: string
  *           description: 响应信息
- *     
+ *
  *     PageInfo:
  *       type: object
  *       properties:
@@ -37,14 +37,14 @@
  *         total:
  *           type: integer
  *           description: 总数量
- *   
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
  *       description: JWT令牌
- * 
+ *
  *   parameters:
  *     pageParam:
  *       in: query
@@ -54,7 +54,7 @@
  *         default: 1
  *         minimum: 1
  *       description: 页码
- *     
+ *
  *     pageSizeParam:
  *       in: query
  *       name: pageSize

@@ -1,7 +1,7 @@
-const LogStorage = require('../../utils/logStorage');
+const LogStorage = require("../../utils/logStorage");
 
 const loggerConfig = {
-    level: process.env.LOG_LEVEL || 'debug',
+    level: process.env.LOG_LEVEL || "debug",
     levels: {
         error: 0,
         warn: 1,
@@ -10,29 +10,29 @@ const loggerConfig = {
         debug: 4,
     },
     colors: {
-        error: 'red',
-        warn: 'yellow',
-        info: 'green',
-        http: 'magenta',
-        debug: 'blue',
+        error: "red",
+        warn: "yellow",
+        info: "green",
+        http: "magenta",
+        debug: "blue",
     },
     // 日志存储配置
     storage: {
-        type: process.env.LOG_STORAGE_TYPE || 'file',
+        type: process.env.LOG_STORAGE_TYPE || "file",
         file: {
-            path: process.env.LOG_FILE_PATH || 'logs',
-            datePattern: process.env.LOG_DATE_PATTERN || 'YYYY-MM-DD',
-            maxSize: process.env.LOG_MAX_SIZE || '20m',
-            maxFiles: process.env.LOG_MAX_FILES || '14d'
+            path: process.env.LOG_FILE_PATH || "logs",
+            datePattern: process.env.LOG_DATE_PATTERN || "YYYY-MM-DD",
+            maxSize: process.env.LOG_MAX_SIZE || "20m",
+            maxFiles: process.env.LOG_MAX_FILES || "14d",
         },
         mongodb: {
             uri: process.env.MONGODB_URI,
-            collection: process.env.LOG_MONGODB_COLLECTION || 'logs',
+            collection: process.env.LOG_MONGODB_COLLECTION || "logs",
             capSize: process.env.LOG_MONGODB_CAP_SIZE || 100000000,
             capMax: process.env.LOG_MONGODB_CAP_MAX || 5000,
-            expireAfterSeconds: process.env.LOG_MONGODB_EXPIRE_AFTER_SECONDS || 2592000
-        }
-    }
+            expireAfterSeconds: process.env.LOG_MONGODB_EXPIRE_AFTER_SECONDS || 2592000,
+        },
+    },
 };
 
 // 创建日志存储实例
@@ -48,7 +48,7 @@ const logStorage = new LogStorage({
     LOG_MONGODB_COLLECTION: loggerConfig.storage.mongodb.collection,
     LOG_MONGODB_CAP_SIZE: loggerConfig.storage.mongodb.capSize,
     LOG_MONGODB_CAP_MAX: loggerConfig.storage.mongodb.capMax,
-    LOG_MONGODB_EXPIRE_AFTER_SECONDS: loggerConfig.storage.mongodb.expireAfterSeconds
+    LOG_MONGODB_EXPIRE_AFTER_SECONDS: loggerConfig.storage.mongodb.expireAfterSeconds,
 });
 
 // 获取配置好的 logger 实例
@@ -58,4 +58,4 @@ const logger = logStorage.getLogger();
 logger.colors = loggerConfig.colors;
 logger.levels = loggerConfig.levels;
 
-module.exports = logger; 
+module.exports = logger;

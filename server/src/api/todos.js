@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const todoController = require('../controllers/todoController');
+const todoController = require("../controllers/todoController");
 
 /**
  * @swagger
@@ -111,7 +111,7 @@ const todoController = require('../controllers/todoController');
  *       500:
  *         description: 服务器错误
  */
-router.get('/', todoController.getTodos);
+router.get("/", todoController.getTodos);
 
 /**
  * @swagger
@@ -140,7 +140,7 @@ router.get('/', todoController.getTodos);
  *       500:
  *         description: 服务器错误
  */
-router.post('/', todoController.createTodo);
+router.post("/", todoController.createTodo);
 
 /**
  * @swagger
@@ -176,7 +176,7 @@ router.post('/', todoController.createTodo);
  *       500:
  *         description: 服务器错误
  */
-router.put('/:id', todoController.updateTodo);
+router.put("/:id", todoController.updateTodo);
 
 /**
  * @swagger
@@ -199,6 +199,6 @@ router.put('/:id', todoController.updateTodo);
  *       500:
  *         description: 服务器错误
  */
-router.delete('/:id', todoController.deleteTodo);
+router.delete("/:id", todoController.deleteTodo);
 
-module.exports = router; 
+module.exports = router;

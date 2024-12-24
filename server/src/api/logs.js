@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const logController = require('../controllers/logController');
+const logController = require("../controllers/logController");
 
 /**
  * @swagger
@@ -130,7 +130,7 @@ const logController = require('../controllers/logController');
  *       500:
  *         description: 服务器错误
  */
-router.get('/', logController.getLogs);
+router.get("/", logController.getLogs);
 
 /**
  * @swagger
@@ -172,6 +172,6 @@ router.get('/', logController.getLogs);
  *       500:
  *         description: 服务器错误
  */
-router.post('/', logController.createLogs);
+router.post("/", logController.createLogs);
 
-module.exports = router; 
+module.exports = router;
