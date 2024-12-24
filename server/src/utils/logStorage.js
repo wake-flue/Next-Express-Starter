@@ -48,15 +48,21 @@ class LogStorage {
                 winston.format.timestamp(),
                 winston.format.colorize({ all: true }),
                 winston.format.printf((info) => {
-                    const { timestamp, level, message, duration, responseMetrics } = info;
-                    let logMessage = `[${this.formatTimestamp(timestamp)}] ${level}: ${message}`;
+                    const { timestamp, level, message, duration, operation, meta } = info;
+                    let logMessage = `[${this.formatTimestamp(timestamp)}] ${level}`;
 
-                    // 只添加关键性能指标
+                    // 添加operation信息
+                    if (operation || (meta && meta.operation)) {
+                        const op = operation || meta.operation;
+                        logMessage += ` [${op}]`;
+                    }
+
+                    // 添加消息
+                    logMessage += `: ${message}`;
+
+                    // 添加关键性能指标
                     if (duration) {
                         logMessage += ` (${duration}ms)`;
-                    }
-                    if (responseMetrics?.dataLength) {
-                        logMessage += ` [返回 ${responseMetrics.dataLength} 条数据]`;
                     }
 
                     return logMessage;

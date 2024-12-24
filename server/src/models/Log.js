@@ -47,9 +47,7 @@ const logSchema = new mongoose.Schema(
             requestInfo: {
                 method: String,
                 url: String,
-                userAgent: String,
                 ip: String,
-                host: String,
                 headers: mongoose.Schema.Types.Mixed,
                 query: mongoose.Schema.Types.Mixed,
             },

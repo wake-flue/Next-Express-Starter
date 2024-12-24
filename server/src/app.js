@@ -14,6 +14,7 @@ const config = require("./config");
 const LogHandler = require("./utils/logHandler");
 const loggerMiddleware = require("./middleware/loggerMiddleware");
 const { errorHandler, notFoundHandler } = require("./middleware/errorMiddleware");
+const operationMiddleware = require("./middleware/operationMiddleware");
 
 //===========================
 // 应用初始化
@@ -60,6 +61,7 @@ app.get(`/api/${apiVersion}/docs.json`, (req, res) => {
 // 通用中间件
 app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
+app.use(operationMiddleware());
 app.use(loggerMiddleware);
 
 //===========================

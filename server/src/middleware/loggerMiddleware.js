@@ -9,9 +9,7 @@ const loggerMiddleware = (req, res, next) => {
         const requestInfo = {
             method: req.method,
             url: req.originalUrl,
-            userAgent: req.get("user-agent") || "",
             ip: req.ip,
-            host: req.get("host"),
             headers: req.headers,
             query: req.query,
         };

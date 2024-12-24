@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const logController = require("../controllers/logController");
+const operationMiddleware = require("../middleware/operationMiddleware");
 
 /**
  * @swagger
@@ -130,7 +131,7 @@ const logController = require("../controllers/logController");
  *       500:
  *         description: 服务器错误
  */
-router.get("/", logController.getLogs);
+router.get("/", operationMiddleware.setOperation("GET_LOGS"), logController.getLogs);
 
 /**
  * @swagger
@@ -172,6 +173,6 @@ router.get("/", logController.getLogs);
  *       500:
  *         description: 服务器错误
  */
-router.post("/", logController.createLogs);
+router.post("/", operationMiddleware.setOperation("CREATE_LOGS"), logController.createLogs);
 
 module.exports = router;
