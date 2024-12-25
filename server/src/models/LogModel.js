@@ -96,6 +96,6 @@ logSchema.index({ timestamp: -1, "meta.source": 1, level: 1 });
 logSchema.index({ timestamp: -1, "meta.environment": 1 });
 logSchema.index({ "request.status": 1, timestamp: -1 });
 
-const Log = mongoose.model(COLLECTIONS.LOGS, logSchema);
+const LogModel = mongoose.model(COLLECTIONS.LOGS, logSchema);
 
-module.exports = Log;
+module.exports = LogModel;

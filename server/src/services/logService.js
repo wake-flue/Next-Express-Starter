@@ -1,4 +1,4 @@
-const Log = require("../models/log");
+const Log = require("../models/LogModel");
 
 class LogService {
     async getLogs(filters = {}, pagination = {}) {

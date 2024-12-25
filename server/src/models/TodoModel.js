@@ -28,6 +28,6 @@ todoSchema.pre("save", function (next) {
     next();
 });
 
-const Todo = mongoose.model(COLLECTIONS.TODOS, todoSchema);
+const TodoModel = mongoose.model(COLLECTIONS.TODOS, todoSchema);
 
-module.exports = Todo;
+module.exports = TodoModel;
