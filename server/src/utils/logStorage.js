@@ -49,16 +49,19 @@ class LogStorage {
                 winston.format.colorize({ all: true }),
                 winston.format.printf((info) => {
                     const { timestamp, level, message, duration, operation, meta } = info;
-                    let logMessage = `[${this.formatTimestamp(timestamp)}] ${level}`;
+                    let logMessage = `[${this.formatTimestamp(timestamp)}] `;
 
                     // 添加operation信息
                     if (operation || (meta && meta.operation)) {
                         const op = operation || meta.operation;
-                        logMessage += ` [${op}]`;
+                        logMessage += `\x1b[96m[${op}]\x1b[0m\t`;
                     }
 
+                    // 添加日志级别
+                    logMessage += `[${level}]`;
+
                     // 添加消息
-                    logMessage += `: ${message}`;
+                    logMessage += ` : ${message}`;
 
                     // 添加关键性能指标
                     if (duration) {

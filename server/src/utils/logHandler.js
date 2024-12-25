@@ -1,5 +1,6 @@
 const config = require("../config");
 const logger = config.logger;
+const { HTTP_STATUS } = require("../constants/httpStatus");
 
 class LogHandler {
     static formatMetadata(metadata = {}) {
@@ -56,9 +57,22 @@ class LogHandler {
             ...this.formatMetadata(metadata),
         };
 
-        if (responseInfo.status >= 500) {
+        // 处理错误信息
+        if (metadata.error) {
+            logData.error = this.formatError(metadata.error);
+        }
+
+        if (responseInfo.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+            // 对于500错误,如果没有显式的错误信息,创建一个
+            if (!logData.error) {
+                logData.error = this.formatError(new Error(`Internal Server Error: ${responseInfo.message || 'Unknown error'}`));
+            }
             logger.error(message, logData);
-        } else if (responseInfo.status >= 400) {
+        } else if (responseInfo.status >= HTTP_STATUS.BAD_REQUEST) {
+            // 对于400错误,如果没有显式的错误信息,创建一个
+            if (!logData.error) {
+                logData.error = this.formatError(new Error(`Client Error: ${responseInfo.message || 'Bad Request'}`));
+            }
             logger.warn(message, logData);
         } else {
             logger.info(message, logData);

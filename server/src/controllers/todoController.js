@@ -19,7 +19,7 @@ class TodoController extends BaseController {
             const result = await todoService.getTodos(filters, paginationParams);
             return ResponseHandler.success(res, result);
         } catch (error) {
-            return ResponseHandler.error(res, "Error fetching todos");
+            return ResponseHandler.error(res, "获取待办事项失败", error);
         }
     }
 
@@ -28,7 +28,7 @@ class TodoController extends BaseController {
             const todo = await todoService.createTodo(req.body);
             return ResponseHandler.created(res, todo);
         } catch (error) {
-            return ResponseHandler.error(res, "Error creating todo");
+            return ResponseHandler.error(res, "创建待办事项失败", error);
         }
     }
 
@@ -36,11 +36,11 @@ class TodoController extends BaseController {
         try {
             const todo = await todoService.updateTodo(req.params.id, req.body);
             if (!todo) {
-                return ResponseHandler.notFound(res, "Todo not found");
+                return ResponseHandler.notFound(res, "待办事项不存在", new Error("待办事项不存在"));
             }
             return ResponseHandler.success(res, todo);
         } catch (error) {
-            return ResponseHandler.error(res, "Error updating todo");
+            return ResponseHandler.error(res, "更新待办事项失败", error);
         }
     }
 
@@ -48,11 +48,11 @@ class TodoController extends BaseController {
         try {
             const result = await todoService.deleteTodo(req.params.id);
             if (!result) {
-                return ResponseHandler.notFound(res, "Todo not found");
+                return ResponseHandler.notFound(res, "待办事项不存在", new Error("待办事项不存在"));
             }
             return ResponseHandler.success(res, null);
         } catch (error) {
-            return ResponseHandler.error(res, "Error deleting todo");
+            return ResponseHandler.error(res, "删除待办事项失败", error);
         }
     }
 }

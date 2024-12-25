@@ -1,3 +1,5 @@
+const { OPERATIONS } = require("../constants/httpStatus");
+
 const generateOperation = (req) => {
     // 如果路由中已经定义了operation,则使用已定义的
     if (req.route && req.route.operation) {
@@ -8,12 +10,15 @@ const generateOperation = (req) => {
     const method = req.method.toLowerCase();
     const path = req.route ? req.route.path : req.path;
 
-    // 移除路径中的参数占位符
-    const cleanPath = path.replace(/:[^/]+/g, "").replace(/\//g, "_");
+    // 移除路径中的参数占位符和api/v1前缀
+    const cleanPath = path
+        .replace(/^\/api\/v1/, '') // 移除api/v1前缀
+        .replace(/:[^/]+/g, '')
+        .replace(/\//g, '_');
 
-    // 生成operation格式: method_path
-    // 例如: get_users, post_users_create
-    return `${method}${cleanPath}`;
+    // 生成operation格式: METHOD_PATH (大写)
+    // 例如: GET_USERS, POST_USERS_CREATE
+    return `${method}${cleanPath}`.toUpperCase();
 };
 
 const operationMiddleware = (options = {}) => {

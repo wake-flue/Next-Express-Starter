@@ -62,20 +62,18 @@ const logSchema = new mongoose.Schema(
                 duration: Number,
             },
 
+            // 错误信息
+            error: {
+                name: {
+                    type: String,
+                    index: true,
+                },
+                message: String,
+                stack: String
+            },
+
             // 其他动态元数据
             additionalData: mongoose.Schema.Types.Mixed,
-        },
-
-        // 错误信息
-        error: {
-            name: {
-                type: String,
-                index: true,
-            },
-            message: String,
-            stack: String,
-            code: String,
-            status: Number,
         },
 
         // 客户端信息

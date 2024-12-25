@@ -18,11 +18,8 @@ class TodoService {
         if (cleanFilters.completed !== undefined) {
             query.completed = cleanFilters.completed === "true";
         }
-        if (cleanFilters.priority) {
-            query.priority = cleanFilters.priority;
-        }
-        if (cleanFilters.search) {
-            query.title = { $regex: cleanFilters.search, $options: "i" };
+        if (cleanFilters.title) {
+            query.title = { $regex: cleanFilters.title, $options: "i" };
         }
 
         // 构建排序对象
@@ -54,10 +51,7 @@ class TodoService {
     async createTodo(todoData) {
         const todo = new Todo({
             title: todoData.title,
-            description: todoData.description,
-            priority: todoData.priority || "medium",
             completed: todoData.completed || false,
-            dueDate: todoData.dueDate,
         });
 
         return await todo.save();
@@ -66,10 +60,7 @@ class TodoService {
     async updateTodo(id, todoData) {
         const updateData = {
             title: todoData.title,
-            description: todoData.description,
-            priority: todoData.priority,
             completed: todoData.completed,
-            dueDate: todoData.dueDate,
         };
 
         // 移除未定义的字段
@@ -77,11 +68,11 @@ class TodoService {
             (key) => updateData[key] === undefined && delete updateData[key],
         );
 
-        return await Todo.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+        return Todo.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
     }
 
     async deleteTodo(id) {
-        return await Todo.findByIdAndDelete(id);
+        return Todo.findByIdAndDelete(id);
     }
 }
 
