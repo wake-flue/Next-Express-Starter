@@ -112,7 +112,7 @@ const operationMiddleware = require("../middleware/operationMiddleware");
  *       500:
  *         description: 服务器错误
  */
-router.get("/", operationMiddleware.setOperation("GET_TODOS"), todoController.getTodos);
+router.get("/", operationMiddleware.setOperation("GET_TODOS", "Todo"), todoController.getTodos);
 
 /**
  * @swagger
@@ -141,7 +141,7 @@ router.get("/", operationMiddleware.setOperation("GET_TODOS"), todoController.ge
  *       500:
  *         description: 服务器错误
  */
-router.post("/", operationMiddleware.setOperation("CREATE_TODO"), todoController.createTodo);
+router.post("/", operationMiddleware.setOperation("CREATE_TODO", "Todo"), todoController.createTodo);
 
 /**
  * @swagger
@@ -177,7 +177,7 @@ router.post("/", operationMiddleware.setOperation("CREATE_TODO"), todoController
  *       500:
  *         description: 服务器错误
  */
-router.put("/:id", operationMiddleware.setOperation("UPDATE_TODO"), todoController.updateTodo);
+router.put("/:id", operationMiddleware.setOperation("UPDATE_TODO", "Todo"), todoController.updateTodo);
 
 /**
  * @swagger
@@ -200,6 +200,6 @@ router.put("/:id", operationMiddleware.setOperation("UPDATE_TODO"), todoControll
  *       500:
  *         description: 服务器错误
  */
-router.delete("/:id", operationMiddleware.setOperation("DELETE_TODO"), todoController.deleteTodo);
+router.delete("/:id", operationMiddleware.setOperation("DELETE_TODO", "Todo"), todoController.deleteTodo);
 
 module.exports = router;

@@ -131,7 +131,7 @@ const operationMiddleware = require("../middleware/operationMiddleware");
  *       500:
  *         description: 服务器错误
  */
-router.get("/", operationMiddleware.setOperation("GET_LOGS"), logController.getLogs);
+router.get("/", operationMiddleware.setOperation("GET_LOGS", "Log"), logController.getLogs);
 
 /**
  * @swagger
@@ -173,6 +173,6 @@ router.get("/", operationMiddleware.setOperation("GET_LOGS"), logController.getL
  *       500:
  *         description: 服务器错误
  */
-router.post("/", operationMiddleware.setOperation("CREATE_LOGS"), logController.createLogs);
+router.post("/", operationMiddleware.setOperation("CREATE_LOGS", "Log"), logController.createLogs);
 
 module.exports = router;

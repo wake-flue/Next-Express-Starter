@@ -54,6 +54,7 @@ class LogHandler {
             requestInfo,
             responseInfo,
             operation: metadata.operation,
+            resourceType: metadata.resourceType,
             ...this.formatMetadata(metadata),
         };
 
@@ -83,6 +84,7 @@ class LogHandler {
         const logData = {
             error: this.formatError(metadata.error),
             operation: metadata.operation,
+            resourceType: metadata.resourceType,
             ...this.formatMetadata(metadata),
         };
         logger.error(message, logData);
@@ -91,6 +93,7 @@ class LogHandler {
     static warn(message, metadata = {}) {
         const logData = {
             operation: metadata.operation,
+            resourceType: metadata.resourceType,
             ...this.formatMetadata(metadata),
         };
         logger.warn(message, logData);
@@ -99,6 +102,7 @@ class LogHandler {
     static info(message, metadata = {}) {
         const logData = {
             operation: metadata.operation,
+            resourceType: metadata.resourceType,
             ...this.formatMetadata(metadata),
         };
         logger.info(message, logData);
@@ -107,6 +111,7 @@ class LogHandler {
     static http(message, metadata = {}) {
         const logData = {
             operation: metadata.operation,
+            resourceType: metadata.resourceType,
             ...this.formatMetadata(metadata),
         };
         logger.http(message, logData);
@@ -115,6 +120,7 @@ class LogHandler {
     static debug(message, metadata = {}) {
         const logData = {
             operation: metadata.operation,
+            resourceType: metadata.resourceType,
             ...this.formatMetadata(metadata),
         };
         logger.debug(message, logData);

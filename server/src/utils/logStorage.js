@@ -48,8 +48,13 @@ class LogStorage {
                 winston.format.timestamp(),
                 winston.format.colorize({ all: true }),
                 winston.format.printf((info) => {
-                    const { timestamp, level, message, duration, operation, meta } = info;
+                    const { timestamp, level, message, duration, operation, resourceType, meta } = info;
                     let logMessage = `[${this.formatTimestamp(timestamp)}] `;
+
+                    // 添加resourceType信息
+                    if (resourceType) {
+                        logMessage += `\x1b[96m[${resourceType}]\x1b[0m\t`;
+                    }
 
                     // 添加operation信息
                     if (operation || (meta && meta.operation)) {

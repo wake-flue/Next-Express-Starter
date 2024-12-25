@@ -30,6 +30,7 @@ config.db
     .then(() => {
         LogHandler.info("MongoDB连接成功", {
             operation: "DB_CONNECT",
+            resourceType: "MongoDB",
             database: "MongoDB",
             status: "success",
         });
@@ -37,6 +38,7 @@ config.db
     .catch((err) => {
         LogHandler.error("MongoDB连接失败", {
             operation: "DB_CONNECT",
+            resourceType: "MongoDB",
             database: "MongoDB",
             status: "failed",
             error: err,
@@ -90,6 +92,7 @@ app.listen(port, () => {
             port,
             environment: process.env.NODE_ENV,
             apiVersion,
+            resourceType: "Server",
             urls: {
                 api: `http://localhost:${port}/api/${apiVersion}`,
                 docs: `http://localhost:${port}/api-docs`,

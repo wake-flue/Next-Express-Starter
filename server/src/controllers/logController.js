@@ -11,7 +11,7 @@ class LogController extends BaseController {
 
     async createLogs(req, res) {
         try {
-            const { logs } = req.body;
+            const logs  = req.body;
 
             if (!Array.isArray(logs)) {
                 return ResponseHandler.badRequest(res, "日志格式错误", new Error("日志格式错误"));

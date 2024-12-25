@@ -23,20 +23,25 @@ const generateOperation = (req) => {
 
 const operationMiddleware = (options = {}) => {
     return (req, res, next) => {
-        // 允许在路由级别自定义operation
+        // 设置operation
         if (options.operation) {
             req.operation = options.operation;
         } else {
-            // 自动生成operation
             req.operation = generateOperation(req);
         }
+
+        // 设置resourceType
+        if (options.resourceType) {
+            req.resourceType = options.resourceType;
+        }
+
         next();
     };
 };
 
-// 用于在路由定义时设置operation的辅助函数
-operationMiddleware.setOperation = (operation) => {
-    return operationMiddleware({ operation });
+// 用于在路由定义时设置operation和resourceType的辅助函数
+operationMiddleware.setOperation = (operation, resourceType) => {
+    return operationMiddleware({ operation, resourceType });
 };
 
 module.exports = operationMiddleware;

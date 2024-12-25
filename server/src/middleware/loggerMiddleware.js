@@ -1,5 +1,5 @@
 const LogHandler = require("../utils/logHandler");
-const { HTTP_STATUS, OPERATIONS, STATUS_TO_OPERATION } = require("../constants/httpStatus");
+const { HTTP_STATUS, OPERATIONS, STATUS_TO_OPERATION, RESOURCE_TYPES } = require("../constants/httpStatus");
 
 const loggerMiddleware = (req, res, next) => {
     const start = new Date();
@@ -39,11 +39,22 @@ const loggerMiddleware = (req, res, next) => {
                     OPERATIONS.BAD_REQUEST);
         }
 
+        // 获取resourceType
+        let resourceType = req.resourceType;
+        if (!resourceType) {
+            resourceType = res.statusCode >= HTTP_STATUS.INTERNAL_SERVER_ERROR ? 
+                RESOURCE_TYPES.SERVER_ERROR :
+                res.statusCode >= HTTP_STATUS.BAD_REQUEST ?
+                    RESOURCE_TYPES.CLIENT_ERROR :
+                    RESOURCE_TYPES.SERVER;
+        }
+
         // 获取业务错误
         error = res.locals.error || error;
 
         const metadata = {
             operation: operation,
+            resourceType: resourceType,
             error: error
         };
 

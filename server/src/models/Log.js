@@ -29,6 +29,7 @@ const logSchema = new mongoose.Schema(
         // 元数据
         meta: {
             operation: String,
+            model: String,
             source: {
                 type: String,
                 enum: SOURCES,

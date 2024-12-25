@@ -24,6 +24,12 @@ class LogService {
         if (cleanFilters.status) {
             query["meta.responseInfo.status"] = cleanFilters.status;
         }
+        if (cleanFilters.resourceType) {
+            query["meta.resourceType"] = cleanFilters.resourceType;
+        }
+        if (cleanFilters.operation) {
+            query["meta.operation"] = cleanFilters.operation;
+        }
         if (cleanFilters.errorType) {
             query["error.name"] = cleanFilters.errorType;
         }

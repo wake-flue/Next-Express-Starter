@@ -29,6 +29,17 @@ const OPERATIONS = {
     UNKNOWN_ERROR: 'UNKNOWN_ERROR'         // 500
 };
 
+// 资源类型
+const RESOURCE_TYPES = {
+    SERVER: 'Server',
+    DATABASE: 'Database',
+    NETWORK: 'Network',
+    CLIENT: 'Client',
+    CLIENT_ERROR: 'ClientError',
+    SERVER_ERROR: 'ServerError',
+    UNKNOWN: 'Unknown'
+};
+
 // HTTP状态码与Operation的映射关系
 const STATUS_TO_OPERATION = {
     [HTTP_STATUS.OK]: OPERATIONS.SUCCESS,
@@ -43,5 +54,6 @@ const STATUS_TO_OPERATION = {
 module.exports = {
     HTTP_STATUS,
     OPERATIONS,
-    STATUS_TO_OPERATION
+    STATUS_TO_OPERATION,
+    RESOURCE_TYPES
 }; 
