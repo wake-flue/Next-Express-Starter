@@ -28,6 +28,7 @@
 ## 快速开始
 
 ### 环境要求
+- Windows 11（推荐）
 - Node.js >= 18.0.0
 - npm >= 8.0.0
 - MongoDB >= 6.0
@@ -44,7 +45,7 @@ cd Next-Express-Starter
 
 前端依赖：
 ```bash
-cd client
+cd web
 npm install
 ```
 
@@ -57,7 +58,7 @@ npm install
 3. 环境配置
 ```bash
 # 前端环境配置
-cp client/.env.example client/.env.local
+cp web/.env.example web/.env.local
 
 # 后端环境配置
 cp server/.env.example server/.env
@@ -74,7 +75,7 @@ npm run dev
 
 2. 启动前端服务
 ```bash
-cd client
+cd web
 npm run dev
 # 应用将在 http://localhost:3000 运行
 ```
@@ -84,21 +85,23 @@ npm run dev
 ```
 Next-Express-Starter/
 ├── client/                # 前端代码
-│   ├── app/              # Pages
-│   ├── components/       # Components
-│   ├── lib/             # Libraries
-│   │   ├── apis/        # API
-│   │   ├── hooks/       # Hooks
-│   │   └── utils/       # Utilities
-│   └── types/           # Types
+│   └── web/              # Next.js 前端应用
+│       ├── app/          # Pages
+│       ├── components/   # Components
+│       ├── lib/          # Libraries
+│       │   ├── apis/     # API
+│       │   ├── hooks/    # Hooks
+│       │   └── utils/    # Utilities
+│       ├── types/        # Types
+│       └── public/       # Public assets
 │
-└── server/              # 后端代码
-    ├── routes/          # 路由
-    ├── models/          # Mongoose 模型
-    ├── middleware/      # 中间件
-    ├── config/          # 配置文件
-    ├── logs/           # 日志文件
-    └── utils/          # 工具函数
+└── server/               # Express 后端服务
+    ├── routes/           # 路由
+    ├── models/           # Mongoose 模型
+    ├── middleware/       # 中间件
+    ├── config/           # 配置文件
+    ├── logs/            # 日志文件
+    └── utils/           # 工具函数
 ```
 
 ## 环境配置
@@ -150,10 +153,6 @@ ENABLE_SWAGGER=true
 - deps: 依赖更新
 - config: 配置修改
 
-## 许可证
-
-MIT
-
 ## 功能特性
 
 ### API 文档
@@ -166,3 +165,7 @@ MIT
 - 支持控制台和 MongoDB 双重输出
 - 日志级别：error、warn、info、debug
 - 自动记录 API 请求和响应
+
+## 许可证
+
+MIT

@@ -1,14 +1,16 @@
 # Dependencies
-node_modules
-.pnp
-.pnp.js
+/node_modules
+/web/node_modules
+/server/node_modules
 
-# Production build files
-/client/dist
-/client/build
-/server/dist
+# Next.js
+/web/.next/
+/web/out/
+
+# Production
+/build
+/web/build
 /server/build
-.next
 
 # Server data
 /server/data

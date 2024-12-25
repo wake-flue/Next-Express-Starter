@@ -4,19 +4,19 @@
   "description": "Next.js + Express Full Stack Template",
   "private": true,
   "scripts": {
-    "cd": "cd client && npm run dev",
+    "cd": "cd web && npm run dev",
     "sd": "cd server && npm run dev",
-    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
-    "client:install": "cd client && npm install",
+    "dev": "concurrently \"npm run server:dev\" \"npm run web:dev\"",
+    "web:install": "cd web && npm install",
     "server:install": "cd server && npm install",
-    "install:all": "npm install && npm run client:install && npm run server:install",
-    "client:build": "cd client && npm run build",
+    "install:all": "npm install && npm run web:install && npm run server:install",
+    "web:build": "cd web && npm run build",
     "server:build": "cd server && npm run build",
-    "build": "npm run client:build && npm run server:build",
-    "client:start": "cd client && npm run start",
+    "build": "npm run web:build && npm run server:build",
+    "web:start": "cd web && npm run start",
     "server:start": "cd server && npm run start",
-    "start": "concurrently \"npm run server:start\" \"npm run client:start\"",
-    "clean": "rimraf node_modules client/node_modules server/node_modules"
+    "start": "concurrently \"npm run server:start\" \"npm run web:start\"",
+    "clean": "rimraf node_modules web/node_modules server/node_modules"
   },
   "keywords": [
     "nextjs",

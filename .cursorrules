@@ -3,15 +3,22 @@
 
 ## 2. Project Structure 
 - `/client` - React frontend code
-- `/client/app` - Pages
-- `/client/components` - Components
-- `/client/hooks` - Hooks
-- `/client/utils` - Utilities
-- `/client/lib` - Libraries
-- `/client/lib/apis` - API
-- `/client/types` - Types
-- `/client/public` - Public assets
-- `/server` - Node backend code
+  - `/web` - Next.js frontend application
+    - `/app` - Pages
+    - `/components` - Components
+    - `/lib` - Libraries
+      - `/apis` - API
+      - `/hooks` - Hooks
+      - `/utils` - Utilities
+    - `/types` - Types
+    - `/public` - Public assets
+- `/server` - Express backend service
+  - `/routes` - Routes
+  - `/models` - Mongoose models
+  - `/middleware` - Middleware
+  - `/config` - Configuration files
+  - `/logs` - Log files
+  - `/utils` - Utility functions
 
 ## 3. Naming Conventions
 - Component files: PascalCase (UserProfile.tsx)
