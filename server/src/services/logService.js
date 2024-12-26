@@ -55,7 +55,13 @@ class LogService extends BaseService {
 
     async findWithPagination(filters = {}, pagination = {}) {
         const query = this._buildLogQuery(filters);
-        const result = await super.findWithPagination(query, pagination, this.validSortFields);
+        // 设置默认按 timestamp 降序排序
+        const paginationWithDefault = {
+            ...pagination,
+            sortBy: pagination.sortBy || "timestamp",
+            sortOrder: pagination.sortOrder || "desc"
+        };
+        const result = await super.findWithPagination(query, paginationWithDefault, this.validSortFields);
         return {
             ...result,
             filters: PaginationUtils.cleanQueryParams(filters)

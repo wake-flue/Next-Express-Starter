@@ -30,7 +30,7 @@ const errorHandler = (err, req, res, next) => {
 
         return res.status(HTTP_STATUS.BAD_REQUEST).json({
             success: false,
-            message: errors[0],
+            message: `验证失败: ${errors[0]}`,
             errors: errors
         });
     }
