@@ -1,20 +1,18 @@
 const Log = require("../models/LogModel");
+const BaseService = require("./BaseService");
+const PaginationUtils = require("../utils/paginationUtils");
 
-class LogService {
-    async getLogs(filters = {}, pagination = {}) {
-        const { page = 1, pageSize = 20, sortBy = "timestamp", sortOrder = "desc" } = pagination;
+class LogService extends BaseService {
+    constructor() {
+        super(Log);
+        this.validSortFields = ["timestamp", "level", "message", "createdAt"];
+    }
 
-        // 构建查询条件
+    // 构建日志查询条件
+    _buildLogQuery(filters = {}) {
         const query = {};
-        const cleanFilters = { ...filters };
+        const cleanFilters = PaginationUtils.cleanQueryParams(filters);
 
-        // 从filters中移除分页参数
-        delete cleanFilters.page;
-        delete cleanFilters.pageSize;
-        delete cleanFilters.sortBy;
-        delete cleanFilters.sortOrder;
-
-        // 构建过滤条件
         if (cleanFilters.level) {
             query.level = cleanFilters.level;
         }
@@ -52,39 +50,15 @@ class LogService {
             query["meta.environment"] = cleanFilters.environment;
         }
 
-        // 验证并构建排序对象
-        const validSortFields = ["timestamp", "level", "message", "createdAt"];
-        const validSortOrders = ["asc", "desc"];
+        return query;
+    }
 
-        const finalSortBy = validSortFields.includes(sortBy) ? sortBy : "timestamp";
-        const finalSortOrder = validSortOrders.includes(sortOrder.toLowerCase()) ? sortOrder.toLowerCase() : "desc";
-
-        const sort = {
-            [finalSortBy]: finalSortOrder === "desc" ? -1 : 1,
-        };
-
-        // 计算总数
-        const total = await Log.countDocuments(query);
-
-        // 获取分页数据
-        const data = await Log.find(query)
-            .sort(sort)
-            .skip((page - 1) * pageSize)
-            .limit(pageSize);
-
+    async getLogs(filters = {}, pagination = {}) {
+        const query = this._buildLogQuery(filters);
+        const result = await this.findWithPagination(query, pagination, this.validSortFields);
         return {
-            data,
-            pagination: {
-                total,
-                page: parseInt(page),
-                pageSize: parseInt(pageSize),
-                totalPages: Math.ceil(total / pageSize),
-            },
-            filters: cleanFilters,
-            sort: {
-                sortBy: finalSortBy,
-                sortOrder: finalSortOrder,
-            },
+            ...result,
+            filters: PaginationUtils.cleanQueryParams(filters)
         };
     }
 

@@ -1,20 +1,18 @@
 const Todo = require("../models/TodoModel");
+const BaseService = require("./BaseService");
+const PaginationUtils = require("../utils/paginationUtils");
 
-class TodoService {
-    async getTodos(filters = {}, pagination = {}) {
-        const { page = 1, pageSize = 20, sortBy = "createdAt", sortOrder = "desc" } = pagination;
+class TodoService extends BaseService {
+    constructor() {
+        super(Todo);
+        this.validSortFields = ['title', 'createdAt', 'completed'];
+    }
 
-        // 构建查询条件
+    // 构建Todo查询条件
+    _buildTodoQuery(filters = {}) {
         const query = {};
-        const cleanFilters = { ...filters };
+        const cleanFilters = PaginationUtils.cleanQueryParams(filters);
 
-        // 从filters中移除非过滤参数
-        delete cleanFilters.page;
-        delete cleanFilters.pageSize;
-        delete cleanFilters.sortBy;
-        delete cleanFilters.sortOrder;
-
-        // 构建过滤条件
         if (cleanFilters.completed !== undefined) {
             query.completed = cleanFilters.completed === "true";
         }
@@ -22,49 +20,23 @@ class TodoService {
             query.title = { $regex: cleanFilters.title, $options: "i" };
         }
 
-        // 验证并构建排序对象
-        const validSortFields = ['title', 'createdAt', 'completed'];
-        const validSortOrders = ['asc', 'desc'];
-        
-        const finalSortBy = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
-        const finalSortOrder = validSortOrders.includes(sortOrder.toLowerCase()) ? sortOrder.toLowerCase() : 'desc';
+        return query;
+    }
 
-        const sort = {
-            [finalSortBy]: finalSortOrder === "desc" ? -1 : 1,
-        };
-
-        // 计算总数
-        const total = await Todo.countDocuments(query);
-
-        // 获取分页数据
-        const data = await Todo.find(query)
-            .sort(sort)
-            .skip((page - 1) * pageSize)
-            .limit(pageSize);
-
+    async getTodos(filters = {}, pagination = {}) {
+        const query = this._buildTodoQuery(filters);
+        const result = await this.findWithPagination(query, pagination, this.validSortFields);
         return {
-            data,
-            pagination: {
-                total,
-                page: parseInt(page),
-                pageSize: parseInt(pageSize),
-                totalPages: Math.ceil(total / pageSize),
-            },
-            filters: cleanFilters,
-            sort: {
-                sortBy: finalSortBy,
-                sortOrder: finalSortOrder
-            }
+            ...result,
+            filters: PaginationUtils.cleanQueryParams(filters)
         };
     }
 
     async createTodo(todoData) {
-        const todo = new Todo({
+        return await this.create({
             title: todoData.title,
             completed: todoData.completed || false,
         });
-
-        return await todo.save();
     }
 
     async updateTodo(id, todoData) {
@@ -75,14 +47,14 @@ class TodoService {
 
         // 移除未定义的字段
         Object.keys(updateData).forEach(
-            (key) => updateData[key] === undefined && delete updateData[key],
+            (key) => updateData[key] === undefined && delete updateData[key]
         );
 
-        return Todo.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+        return await this.update(id, updateData);
     }
 
     async deleteTodo(id) {
-        return Todo.findByIdAndDelete(id);
+        return await this.delete(id);
     }
 }
 

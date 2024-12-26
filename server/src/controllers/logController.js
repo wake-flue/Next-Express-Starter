@@ -1,10 +1,11 @@
 const logService = require("../services/logService");
 const ResponseHandler = require("../utils/responseHandler");
 const BaseController = require("./BaseController");
+const PaginationUtils = require("../utils/paginationUtils");
 
 class LogController extends BaseController {
     constructor() {
-        super();
+        super(logService);
         this.createLogs = this.createLogs.bind(this);
         this.getLogs = this.getLogs.bind(this);
     }
@@ -17,7 +18,7 @@ class LogController extends BaseController {
                 return ResponseHandler.badRequest(res, "日志格式错误", new Error("日志格式错误"));
             }
 
-            const result = await logService.createLogs(logs);
+            const result = await this.service.createLogs(logs);
             return ResponseHandler.created(res, result);
         } catch (error) {
             next(error);
@@ -27,14 +28,14 @@ class LogController extends BaseController {
     async getLogs(req, res, next) {
         try {
             const { status, ...query } = req.query;
+            const paginationParams = PaginationUtils.processPaginationParams(query);
+            const filters = PaginationUtils.cleanQueryParams(query);
 
             if (status) {
-                query.status = parseInt(status);
+                filters.status = parseInt(status);
             }
 
-            const paginationParams = this.getPaginationParams(query);
-            const result = await logService.getLogs(query, paginationParams);
-
+            const result = await this.service.getLogs(filters, paginationParams);
             return ResponseHandler.success(res, result);
         } catch (error) {
             next(error);
