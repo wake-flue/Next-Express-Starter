@@ -206,7 +206,7 @@
  *                 data:
  *                   $ref: '#/components/schemas/Todo'
  *       404:
- *         description: 待办事项不存在
+ *         description: 资源不存在
  *         content:
  *           application/json:
  *             schema:
@@ -236,7 +236,7 @@
  *                 data:
  *                   type: null
  *       404:
- *         description: 待办事项不存在
+ *         description: 资源不存在
  *         content:
  *           application/json:
  *             schema:

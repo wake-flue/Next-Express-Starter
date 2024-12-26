@@ -23,23 +23,23 @@ class TodoService extends BaseService {
         return query;
     }
 
-    async getTodos(filters = {}, pagination = {}) {
+    async findWithPagination(filters = {}, pagination = {}) {
         const query = this._buildTodoQuery(filters);
-        const result = await this.findWithPagination(query, pagination, this.validSortFields);
+        const result = await super.findWithPagination(query, pagination, this.validSortFields);
         return {
             ...result,
             filters: PaginationUtils.cleanQueryParams(filters)
         };
     }
 
-    async createTodo(todoData) {
-        return await this.create({
+    async create(todoData) {
+        return await super.create({
             title: todoData.title,
             completed: todoData.completed || false,
         });
     }
 
-    async updateTodo(id, todoData) {
+    async update(id, todoData) {
         const updateData = {
             title: todoData.title,
             completed: todoData.completed,
@@ -50,11 +50,7 @@ class TodoService extends BaseService {
             (key) => updateData[key] === undefined && delete updateData[key]
         );
 
-        return await this.update(id, updateData);
-    }
-
-    async deleteTodo(id) {
-        return await this.delete(id);
+        return await super.update(id, updateData);
     }
 }
 
