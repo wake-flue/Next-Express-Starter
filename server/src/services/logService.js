@@ -53,16 +53,16 @@ class LogService extends BaseService {
         return query;
     }
 
-    async getLogs(filters = {}, pagination = {}) {
+    async findWithPagination(filters = {}, pagination = {}) {
         const query = this._buildLogQuery(filters);
-        const result = await this.findWithPagination(query, pagination, this.validSortFields);
+        const result = await super.findWithPagination(query, pagination, this.validSortFields);
         return {
             ...result,
             filters: PaginationUtils.cleanQueryParams(filters)
         };
     }
 
-    async createLogs(logs) {
+    async create(logs) {
         // 确保每个日志都有timestamp
         const logsWithTimestamp = logs.map(log => ({
             ...log,
