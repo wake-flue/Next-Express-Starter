@@ -11,7 +11,7 @@ class TodoController extends BaseController {
         this.deleteTodo = this.deleteTodo.bind(this);
     }
 
-    async getTodos(req, res) {
+    async getTodos(req, res, next) {
         try {
             const { ...filters } = req.query;
             const paginationParams = this.getPaginationParams(req.query);
@@ -19,20 +19,20 @@ class TodoController extends BaseController {
             const result = await todoService.getTodos(filters, paginationParams);
             return ResponseHandler.success(res, result);
         } catch (error) {
-            return ResponseHandler.error(res, "获取待办事项失败", error);
+            next(error);
         }
     }
 
-    async createTodo(req, res) {
+    async createTodo(req, res, next) {
         try {
             const todo = await todoService.createTodo(req.body);
             return ResponseHandler.created(res, todo);
         } catch (error) {
-            return ResponseHandler.error(res, "创建待办事项失败", error);
+            next(error);
         }
     }
 
-    async updateTodo(req, res) {
+    async updateTodo(req, res, next) {
         try {
             const todo = await todoService.updateTodo(req.params.id, req.body);
             if (!todo) {
@@ -40,11 +40,11 @@ class TodoController extends BaseController {
             }
             return ResponseHandler.success(res, todo);
         } catch (error) {
-            return ResponseHandler.error(res, "更新待办事项失败", error);
+            next(error);
         }
     }
 
-    async deleteTodo(req, res) {
+    async deleteTodo(req, res, next) {
         try {
             const result = await todoService.deleteTodo(req.params.id);
             if (!result) {
@@ -52,7 +52,7 @@ class TodoController extends BaseController {
             }
             return ResponseHandler.success(res, null);
         } catch (error) {
-            return ResponseHandler.error(res, "删除待办事项失败", error);
+            next(error);
         }
     }
 }

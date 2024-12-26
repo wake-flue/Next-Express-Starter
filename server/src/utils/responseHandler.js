@@ -2,13 +2,11 @@ const { HTTP_STATUS } = require("../constants/httpStatus");
 
 class ResponseHandler {
     static formatResponse(success, data = null, message = "") {
-        const response = {
+        return {
             success,
             data,
             message: message || (success ? "操作成功" : "操作失败"),
         };
-
-        return response;
     }
 
     static success(res, data) {

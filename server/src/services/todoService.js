@@ -22,9 +22,15 @@ class TodoService {
             query.title = { $regex: cleanFilters.title, $options: "i" };
         }
 
-        // 构建排序对象
+        // 验证并构建排序对象
+        const validSortFields = ['title', 'createdAt', 'completed'];
+        const validSortOrders = ['asc', 'desc'];
+        
+        const finalSortBy = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
+        const finalSortOrder = validSortOrders.includes(sortOrder.toLowerCase()) ? sortOrder.toLowerCase() : 'desc';
+
         const sort = {
-            [sortBy]: sortOrder === "desc" ? -1 : 1,
+            [finalSortBy]: finalSortOrder === "desc" ? -1 : 1,
         };
 
         // 计算总数
@@ -45,6 +51,10 @@ class TodoService {
                 totalPages: Math.ceil(total / pageSize),
             },
             filters: cleanFilters,
+            sort: {
+                sortBy: finalSortBy,
+                sortOrder: finalSortOrder
+            }
         };
     }
 

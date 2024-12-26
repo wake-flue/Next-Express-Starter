@@ -87,7 +87,8 @@ describe('Todo Routes Integration Tests', () => {
     it('should sort todos by specified field', async () => {
       await Todo.create([
         { title: 'A Todo', completed: false },
-        { title: 'B Todo', completed: true }
+        { title: 'B Todo', completed: true },
+        { title: 'Test Todo', completed: false }
       ]);
 
       const response = await request(app)
@@ -97,6 +98,7 @@ describe('Todo Routes Integration Tests', () => {
 
       // 验证排序结果
       expect(response.body.data.data[0].title).toBe('A Todo');
+      expect(response.body.data.data[1].title).toBe('B Todo');
       expect(response.body.data.data[2].title).toBe('Test Todo');
     });
   });

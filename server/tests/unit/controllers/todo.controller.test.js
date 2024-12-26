@@ -12,6 +12,7 @@ jest.mock('../../../src/services/todoService');
 describe('TodoController', () => {
   let mockReq;
   let mockRes;
+  let mockNext;
 
   // 在每个测试前重置 mock 对象
   beforeEach(() => {
@@ -20,6 +21,7 @@ describe('TodoController', () => {
       json: jest.fn(),
       locals: {},
     };
+    mockNext = jest.fn();
     jest.clearAllMocks();
   });
 
@@ -40,7 +42,7 @@ describe('TodoController', () => {
       };
       todoService.getTodos.mockResolvedValue(mockTodos);
 
-      await todoController.getTodos(mockReq, mockRes);
+      await todoController.getTodos(mockReq, mockRes, mockNext);
 
       // 验证响应状态和数据
       expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -49,6 +51,7 @@ describe('TodoController', () => {
         data: mockTodos,
         message: '操作成功',
       });
+      expect(mockNext).not.toHaveBeenCalled();
     });
 
     // 测试获取 Todo 列表失败的情况
@@ -57,15 +60,12 @@ describe('TodoController', () => {
       const error = new Error('Database error');
       todoService.getTodos.mockRejectedValue(error);
 
-      await todoController.getTodos(mockReq, mockRes);
+      await todoController.getTodos(mockReq, mockRes, mockNext);
 
-      // 验证错误响应
-      expect(mockRes.status).toHaveBeenCalledWith(500);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '获取待办事项失败',
-        data: null,
-      });
+      // 验证错误处理
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
   });
 
@@ -83,7 +83,7 @@ describe('TodoController', () => {
       const mockTodo = { _id: 'mockId', ...mockReq.body };
       todoService.createTodo.mockResolvedValue(mockTodo);
 
-      await todoController.createTodo(mockReq, mockRes);
+      await todoController.createTodo(mockReq, mockRes, mockNext);
 
       // 验证创建成功的响应
       expect(mockRes.status).toHaveBeenCalledWith(201);
@@ -92,6 +92,7 @@ describe('TodoController', () => {
         data: mockTodo,
         message: '创建成功',
       });
+      expect(mockNext).not.toHaveBeenCalled();
     });
 
     // 测试创建 Todo 失败的情况
@@ -100,15 +101,12 @@ describe('TodoController', () => {
       const error = new Error('Validation error');
       todoService.createTodo.mockRejectedValue(error);
 
-      await todoController.createTodo(mockReq, mockRes);
+      await todoController.createTodo(mockReq, mockRes, mockNext);
 
-      // 验证错误响应
-      expect(mockRes.status).toHaveBeenCalledWith(500);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '创建待办事项失败',
-        data: null,
-      });
+      // 验证错误处理
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
   });
 
@@ -129,7 +127,7 @@ describe('TodoController', () => {
       const mockTodo = { _id: todoId, ...mockReq.body };
       todoService.updateTodo.mockResolvedValue(mockTodo);
 
-      await todoController.updateTodo(mockReq, mockRes);
+      await todoController.updateTodo(mockReq, mockRes, mockNext);
 
       // 验证更新成功的响应
       expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -138,13 +136,14 @@ describe('TodoController', () => {
         data: mockTodo,
         message: '操作成功',
       });
+      expect(mockNext).not.toHaveBeenCalled();
     });
 
     // 测试更新不存在的 Todo 的情况
     it('should handle not found error', async () => {
       todoService.updateTodo.mockResolvedValue(null);
 
-      await todoController.updateTodo(mockReq, mockRes);
+      await todoController.updateTodo(mockReq, mockRes, mockNext);
 
       // 验证未找到的响应
       expect(mockRes.status).toHaveBeenCalledWith(404);
@@ -153,6 +152,7 @@ describe('TodoController', () => {
         message: '待办事项不存在',
         data: null,
       });
+      expect(mockNext).not.toHaveBeenCalled();
     });
 
     // 测试更新 Todo 失败的情况
@@ -161,15 +161,12 @@ describe('TodoController', () => {
       const error = new Error('Database error');
       todoService.updateTodo.mockRejectedValue(error);
 
-      await todoController.updateTodo(mockReq, mockRes);
+      await todoController.updateTodo(mockReq, mockRes, mockNext);
 
-      // 验证错误响应
-      expect(mockRes.status).toHaveBeenCalledWith(500);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '更新待办事项失败',
-        data: null,
-      });
+      // 验证错误处理
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
   });
 
@@ -189,7 +186,7 @@ describe('TodoController', () => {
       const mockTodo = { _id: todoId };
       todoService.deleteTodo.mockResolvedValue(mockTodo);
 
-      await todoController.deleteTodo(mockReq, mockRes);
+      await todoController.deleteTodo(mockReq, mockRes, mockNext);
 
       // 验证删除成功的响应
       expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -198,13 +195,14 @@ describe('TodoController', () => {
         data: null,
         message: '操作成功',
       });
+      expect(mockNext).not.toHaveBeenCalled();
     });
 
     // 测试删除不存在的 Todo 的情况
     it('should handle not found error', async () => {
       todoService.deleteTodo.mockResolvedValue(null);
 
-      await todoController.deleteTodo(mockReq, mockRes);
+      await todoController.deleteTodo(mockReq, mockRes, mockNext);
 
       // 验证未找到的响应
       expect(mockRes.status).toHaveBeenCalledWith(404);
@@ -213,6 +211,7 @@ describe('TodoController', () => {
         message: '待办事项不存在',
         data: null,
       });
+      expect(mockNext).not.toHaveBeenCalled();
     });
 
     // 测试删除 Todo 失败的情况
@@ -221,15 +220,12 @@ describe('TodoController', () => {
       const error = new Error('Database error');
       todoService.deleteTodo.mockRejectedValue(error);
 
-      await todoController.deleteTodo(mockReq, mockRes);
+      await todoController.deleteTodo(mockReq, mockRes, mockNext);
 
-      // 验证错误响应
-      expect(mockRes.status).toHaveBeenCalledWith(500);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '删除待办事项失败',
-        data: null,
-      });
+      // 验证错误处理
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
   });
 }); 
