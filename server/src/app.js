@@ -81,22 +81,25 @@ app.use(`/api/${apiVersion}/logs`, logsRouter);
 app.use(errorHandler); // 500错误处理
 app.use(notFoundHandler); // 404错误处理
 
-//===========================
-// 服务器启动
-//===========================
-app.listen(port, () => {
-    LogHandler.info(
-        `服务器启动成功\t访问地址：http://localhost:${port}/api/${apiVersion}\t文档地址：http://localhost:${port}/api-docs`,
-        {
-            operation: "SERVER_START",
-            port,
-            environment: process.env.NODE_ENV,
-            apiVersion,
-            resourceType: "Server",
-            urls: {
-                api: `http://localhost:${port}/api/${apiVersion}`,
-                docs: `http://localhost:${port}/api-docs`,
+// 仅在直接运行时启动服务器
+if (require.main === module) {
+    app.listen(port, () => {
+        LogHandler.info(
+            `服务器启动成功\t访问地址：http://localhost:${port}/api/${apiVersion}\t文档地址：http://localhost:${port}/api-docs`,
+            {
+                operation: "SERVER_START",
+                port,
+                environment: process.env.NODE_ENV,
+                apiVersion,
+                resourceType: "Server",
+                urls: {
+                    api: `http://localhost:${port}/api/${apiVersion}`,
+                    docs: `http://localhost:${port}/api-docs`,
+                },
             },
-        },
-    );
-});
+        );
+    });
+}
+
+// 导出 app 实例供测试使用
+module.exports = app;

@@ -4,17 +4,9 @@ class ResponseHandler {
     static formatResponse(success, data = null, message = "") {
         const response = {
             success,
+            data,
             message: message || (success ? "操作成功" : "操作失败"),
         };
-
-        // 处理分页数据
-        if (data && data.pagination) {
-            response.data = data.data;
-            response.pagination = data.pagination;
-            if (data.filters) response.filters = data.filters;
-        } else {
-            response.data = data;
-        }
 
         return response;
     }
@@ -32,7 +24,6 @@ class ResponseHandler {
     }
 
     static notFound(res, message = "资源未找到", error) {
-
         return this.error(res, message, error, HTTP_STATUS.NOT_FOUND);
     }
 
