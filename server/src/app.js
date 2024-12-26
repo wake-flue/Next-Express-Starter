@@ -81,6 +81,9 @@ app.use(`/api/${apiVersion}/logs`, logsRouter);
 app.use(errorHandler); // 500错误处理
 app.use(notFoundHandler); // 404错误处理
 
+//===========================
+// 启动服务器
+//===========================
 // 仅在直接运行时启动服务器
 if (require.main === module) {
     app.listen(port, () => {

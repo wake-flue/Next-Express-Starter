@@ -38,6 +38,22 @@
  *           type: integer
  *           description: 总数量
  *
+ *     Error:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: false
+ *         error:
+ *           type: object
+ *           properties:
+ *             message:
+ *               type: string
+ *               description: 错误信息
+ *             details:
+ *               type: string
+ *               description: 详细错误信息
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
