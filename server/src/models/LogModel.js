@@ -70,23 +70,22 @@ const logSchema = new mongoose.Schema(
                     index: true,
                 },
                 message: String,
-                stack: String
+                stack: String,
+            },
+
+            // 客户端信息
+            client: {
+                browser: String,
+                os: String,
+                device: String,
+                url: String,
             },
 
             // 其他动态元数据
             additionalData: mongoose.Schema.Types.Mixed,
         },
-
-        // 客户端信息
-        client: {
-            browser: String,
-            os: String,
-            device: String,
-            url: String,
-        },
     },
     {
-        timestamps: true,
         minimize: false,
     },
 );

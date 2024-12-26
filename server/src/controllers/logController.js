@@ -9,21 +9,22 @@ class LogController extends BaseController {
         this.getLogs = this.getLogs.bind(this);
     }
 
-    async createLogs(req, res) {
+    async createLogs(req, res, next) {
         try {
-            const logs  = req.body;
+            const logs = req.body;
 
             if (!Array.isArray(logs)) {
                 return ResponseHandler.badRequest(res, "日志格式错误", new Error("日志格式错误"));
             }
 
-            return ResponseHandler.success(res, { message: "日志接收成功" });
+            const result = await logService.createLogs(logs);
+            return ResponseHandler.created(res, result);
         } catch (error) {
-            return ResponseHandler.error(res, "日志接收失败", error);
+            next(error);
         }
     }
 
-    async getLogs(req, res) {
+    async getLogs(req, res, next) {
         try {
             const { status, ...query } = req.query;
 
@@ -36,7 +37,7 @@ class LogController extends BaseController {
 
             return ResponseHandler.success(res, result);
         } catch (error) {
-            return ResponseHandler.error(res, "获取日志失败", error);
+            next(error);
         }
     }
 }
