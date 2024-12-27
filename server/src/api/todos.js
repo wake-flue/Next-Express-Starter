@@ -9,6 +9,11 @@ const operationMiddleware = require("../middleware/operationMiddleware");
 router.get("/", operationMiddleware.setOperation("GET_TODOS", "Todo"), todoController.list.bind(todoController));
 
 /**
+ * 获取待办详情
+ */
+router.get("/:id", operationMiddleware.setOperation("GET_TODO_DETAIL", "Todo"), todoController.detail.bind(todoController));
+
+/**
  * 创建待办事项
  */
 router.post("/", operationMiddleware.setOperation("CREATE_TODO", "Todo"), todoController.create.bind(todoController));

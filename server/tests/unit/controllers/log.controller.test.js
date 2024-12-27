@@ -154,4 +154,63 @@ describe('LogController', () => {
       expect(mockRes.json).not.toHaveBeenCalled();
     });
   });
+
+  // 测试获取日志详情接口
+  describe('detail', () => {
+    const logId = new mongoose.Types.ObjectId().toString();
+
+    beforeEach(() => {
+      mockReq = {
+        params: { id: logId },
+      };
+    });
+
+    it('should get log detail successfully', async () => {
+      const mockLog = {
+        _id: logId,
+        level: 'info',
+        message: 'Test log',
+        meta: {
+          source: 'backend',
+          environment: 'development'
+        }
+      };
+      logService.findById.mockResolvedValue(mockLog);
+
+      await logController.detail(mockReq, mockRes, mockNext);
+
+      expect(mockRes.status).toHaveBeenCalledWith(200);
+      expect(mockRes.json).toHaveBeenCalledWith({
+        success: true,
+        data: mockLog,
+        message: '操作成功',
+      });
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should handle not found error', async () => {
+      logService.findById.mockResolvedValue(null);
+
+      await logController.detail(mockReq, mockRes, mockNext);
+
+      expect(mockRes.status).toHaveBeenCalledWith(404);
+      expect(mockRes.json).toHaveBeenCalledWith({
+        success: false,
+        message: '资源不存在',
+        data: null,
+      });
+      expect(mockNext).not.toHaveBeenCalled();
+    });
+
+    it('should handle error when getting log fails', async () => {
+      const error = new Error('Database error');
+      logService.findById.mockRejectedValue(error);
+
+      await logController.detail(mockReq, mockRes, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
+    });
+  });
 }); 

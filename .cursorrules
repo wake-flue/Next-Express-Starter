@@ -2,23 +2,28 @@
 - Windows 11, Command line tool: PowerShell, commands separated by ';'
 
 ## 2. Project Structure 
-- `/client` - React frontend code
-  - `/web` - Next.js frontend application
-    - `/app` - Pages
-    - `/components` - Components
-    - `/lib` - Libraries
-      - `/apis` - API
-      - `/hooks` - Hooks
-      - `/utils` - Utilities
-    - `/types` - Types
-    - `/public` - Public assets
+- `/web` - Next.js frontend application
+  - `/app` - Pages
+  - `/components` - Components
+  - `/lib` - Libraries
+    - `/apis` - API
+  - `/hooks` - Hooks
+  - `/utils` - Utilities
+  - `/types` - Types
+  - `/public` - Public assets
 - `/server` - Express backend service
-  - `/routes` - Routes
-  - `/models` - Mongoose models
-  - `/middleware` - Middleware
-  - `/config` - Configuration files
+  - `/src` - Source code
+    - `/api` - API routes
+    - `/controllers` - Controllers
+    - `/services` - Services
+    - `/models` - Mongoose models
+    - `/middleware` - Middleware
+    - `/utils` - Utility functions
+    - `/config` - Configuration files
+  - `/tests` - Test files
+    - `/unit` - Unit tests
+    - `/integration` - Integration tests
   - `/logs` - Log files
-  - `/utils` - Utility functions
 
 ## 3. Naming Conventions
 - Component files: PascalCase (UserProfile.tsx)
@@ -37,20 +42,83 @@
 ### Frontend
 - react: ^18.2.0
 - react-dom: ^18.2.0
+- next: ^14.0.0
 - typescript: ^5.0.0
-- vite: ^4.4.0
+- @types/react: ^18.2.0
+- @types/node: ^20.0.0
 - tailwindcss: ^3.3.0
+- postcss: ^8.4.0
+- autoprefixer: ^10.4.0
 - axios: ^1.4.0
-- shadcn/ui: ^0.0.4
+- @tanstack/react-query: ^5.0.0
+- zustand: ^4.4.0
+- @hookform/resolvers: ^3.3.0
+- react-hook-form: ^7.47.0
+- zod: ^3.22.0
+- date-fns: ^2.30.0
+- clsx: ^2.0.0
+- lucide-react: ^0.290.0
+
+# UI Components
+- @radix-ui/react-alert-dialog: ^1.0.5
+- @radix-ui/react-dialog: ^1.0.5
+- @radix-ui/react-dropdown-menu: ^2.0.6
+- @radix-ui/react-label: ^2.0.2
+- @radix-ui/react-slot: ^1.0.2
+- @radix-ui/react-toast: ^1.1.5
+- class-variance-authority: ^0.7.0
+- tailwind-merge: ^1.14.0
+- @shadcn/ui: ^0.0.4
 
 ### Backend
+# Core
 - node: ^18.0.0
 - express: ^4.18.0
 - typescript: ^5.0.0
+- @types/express: ^4.17.0
+- @types/node: ^20.0.0
 - cors: ^2.8.5
 - dotenv: ^16.3.0
-- mongoose: ^8.9.0
-- winston: ^3.17.0
-- winston-mongodb: ^6.0.0
+- helmet: ^7.0.0
+- compression: ^1.7.4
+
+# Database
+- mongoose: ^8.0.0
+- @types/mongoose: ^5.11.97
+- mongodb: ^6.2.0
+
+# Validation & Security
+- express-validator: ^7.0.0
+- bcryptjs: ^2.4.3
+- jsonwebtoken: ^9.0.0
+- cookie-parser: ^1.4.6
+
+# Logging
+- winston: ^3.11.0
+- winston-daily-rotate-file: ^4.7.1
+- winston-mongodb: ^6.1.1
+
+# API Documentation
 - swagger-jsdoc: ^6.2.8
-- swagger-ui-express: ^5.0.1
+- swagger-ui-express: ^5.0.0
+- @types/swagger-ui-express: ^4.1.3
+
+# Testing
+- jest: ^29.7.0
+- @types/jest: ^29.5.0
+- supertest: ^6.3.3
+- @types/supertest: ^2.0.16
+- ts-jest: ^29.1.1
+
+### Development Tools
+- eslint: ^8.52.0
+- prettier: ^3.0.3
+- @typescript-eslint/eslint-plugin: ^6.9.0
+- @typescript-eslint/parser: ^6.9.0
+- husky: ^8.0.3
+- lint-staged: ^15.0.2
+- commitlint: ^18.2.0
+- nodemon: ^3.0.1
+- ts-node: ^10.9.1
+- cross-env: ^7.0.3
+- rimraf: ^5.0.5

@@ -143,7 +143,7 @@ describe('Todo Routes Integration Tests', () => {
 
     it('should handle non-existent todo', async () => {
       const nonExistentId = new mongoose.Types.ObjectId();
-      
+
       const response = await request(app)
         .put(`${API_PREFIX}/todos/${nonExistentId}`)
         .send({ title: 'Updated Title' })
@@ -164,20 +164,55 @@ describe('Todo Routes Integration Tests', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toBe('操作成功');
-      
+
       const deletedTodo = await Todo.findById(testTodo._id);
       expect(deletedTodo).toBeNull();
     });
 
     it('should handle non-existent todo', async () => {
       const nonExistentId = new mongoose.Types.ObjectId();
-      
+
       const response = await request(app)
         .delete(`${API_PREFIX}/todos/${nonExistentId}`)
         .expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.message).toBe('资源不存在');
+    });
+  });
+
+  // 测试获取待办详情
+  describe('GET /todos/:id', () => {
+    it('should get todo detail successfully', async () => {
+      const response = await request(app)
+        .get(`${API_PREFIX}/todos/${testTodo._id}`)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.message).toBe('操作成功');
+      expect(response.body.data.title).toBe('Test Todo');
+      expect(response.body.data.completed).toBe(false);
+    });
+
+    it('should handle non-existent todo', async () => {
+      const nonExistentId = new mongoose.Types.ObjectId();
+
+      const response = await request(app)
+        .get(`${API_PREFIX}/todos/${nonExistentId}`)
+        .expect(404);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe('资源不存在');
+    });
+
+    it('should handle invalid todo id', async () => {
+      const response = await request(app)
+        .get(`${API_PREFIX}/todos/invalid-id`)
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toContain('无效的ID格式');
     });
   });
 }); 

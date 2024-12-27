@@ -121,6 +121,32 @@ GET /api/todos
 }
 ```
 
+#### 获取待办事项详情
+```http
+GET /api/todos/:id
+```
+
+路径参数：
+- `id`: Todo ID
+
+响应示例：
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "...",
+    "title": "示例待办",
+    "completed": false,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+}
+```
+
+错误响应：
+- 400: 无效的ID格式
+- 404: 资源不存在
+
 #### 创建待办事项
 ```http
 POST /api/todos
@@ -212,6 +238,44 @@ GET /api/logs
   }
 }
 ```
+
+#### 获取日志详情
+```http
+GET /api/logs/:id
+```
+
+路径参数：
+- `id`: Log ID
+
+响应示例：
+```json
+{
+  "success": true,
+  "data": {
+    "timestamp": "2024-01-01T00:00:00.000Z",
+    "level": "info",
+    "message": "示例日志",
+    "meta": {
+      "operation": "GET_TODOS",
+      "source": "backend",
+      "environment": "development",
+      "requestInfo": {
+        "method": "GET",
+        "url": "/api/todos"
+      },
+      "responseInfo": {
+        "status": 200,
+        "message": "操作成功",
+        "duration": 50
+      }
+    }
+  }
+}
+```
+
+错误响应：
+- 400: 无效的ID格式
+- 404: 资源不存在
 
 #### 创建日志
 ```http

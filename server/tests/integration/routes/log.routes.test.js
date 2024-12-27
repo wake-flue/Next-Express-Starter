@@ -224,4 +224,40 @@ describe('Log Routes Integration Tests', () => {
       expect(response.body.message).toContain('验证失败');
     });
   });
+
+  // 测试获取日志详情
+  describe('GET /logs/:id', () => {
+    it('should get log detail successfully', async () => {
+      const response = await request(app)
+        .get(`${API_PREFIX}/logs/${testLog._id}`)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.message).toBe('操作成功');
+      expect(response.body.data.message).toBe('Test log');
+      expect(response.body.data.level).toBe('info');
+      expect(response.body.data.meta.source).toBe('backend');
+    });
+
+    it('should handle non-existent log', async () => {
+      const nonExistentId = new mongoose.Types.ObjectId();
+      
+      const response = await request(app)
+        .get(`${API_PREFIX}/logs/${nonExistentId}`)
+        .expect(404);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe('资源不存在');
+    });
+
+    it('should handle invalid log id', async () => {
+      const response = await request(app)
+        .get(`${API_PREFIX}/logs/invalid-id`)
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toContain('无效的ID格式');
+    });
+  });
 }); 

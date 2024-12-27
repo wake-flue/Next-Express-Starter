@@ -167,6 +167,42 @@
  *               $ref: '#/components/schemas/Error'
  * 
  * /api/v1/todos/{id}:
+ *   get:
+ *     tags: [Todo]
+ *     summary: 获取待办事项详情
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Todo ID
+ *     responses:
+ *       200:
+ *         description: 成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Todo'
+ *       400:
+ *         description: 无效的ID格式
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: 资源不存在
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ * 
  *   put:
  *     tags: [Todo]
  *     summary: 更新待办事项
