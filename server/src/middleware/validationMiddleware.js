@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-const { ApiError } = require('../utils/apiError');
+const { ValidationError } = require('../utils/apiError');
 
 /**
  * 验证中间件
@@ -23,12 +23,8 @@ const validate = validations => {
       value: err.value
     }));
 
-    // 抛出ApiError由errorHandler处理
-    const error = new ApiError(400, formattedErrors[0].message);
-    error.name = 'ValidationError';
-    error.errors = formattedErrors;
-
-    next(error);
+    // 使用ValidationError处理验证错误
+    next(new ValidationError(formattedErrors[0].message, formattedErrors));
   };
 };
 

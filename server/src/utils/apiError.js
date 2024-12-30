@@ -41,10 +41,19 @@ class BadRequestError extends ApiError {
   }
 }
 
+class ValidationError extends ApiError {
+  constructor(message = '验证错误', errors = []) {
+    super(HTTP_STATUS.BAD_REQUEST, message);
+    this.name = 'ValidationError';
+    this.errors = errors;
+  }
+}
+
 module.exports = {
   ApiError,
   UnauthorizedError,
   ForbiddenError,
   NotFoundError,
-  BadRequestError
+  BadRequestError,
+  ValidationError
 }; 
