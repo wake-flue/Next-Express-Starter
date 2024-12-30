@@ -10,6 +10,17 @@ const mongoose = require('mongoose');
 // 模拟 logService
 jest.mock('../../../src/services/logService');
 
+// 模拟 catchAsync
+jest.mock('../../../src/utils/catchAsync', () => (fn) => {
+  return async (req, res, next) => {
+    try {
+      await fn(req, res);
+    } catch (error) {
+      next(error);
+    }
+  };
+});
+
 describe('LogController', () => {
   let mockReq;
   let mockRes;
@@ -135,8 +146,8 @@ describe('LogController', () => {
 
       await logController.create(mockReq, mockRes, mockNext);
 
-      const error = new BadRequestError('日志格式错误, 应为数组');
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(BadRequestError));
+      expect(mockNext.mock.calls[0][0].message).toBe('日志格式错误, 应为数组');
       expect(mockRes.status).not.toHaveBeenCalled();
       expect(mockRes.json).not.toHaveBeenCalled();
       expect(logService.create).not.toHaveBeenCalled();
@@ -192,8 +203,8 @@ describe('LogController', () => {
 
       await logController.detail(mockReq, mockRes, mockNext);
 
-      const error = new NotFoundError('资源不存在');
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(NotFoundError));
+      expect(mockNext.mock.calls[0][0].message).toBe('资源不存在');
       expect(mockRes.status).not.toHaveBeenCalled();
       expect(mockRes.json).not.toHaveBeenCalled();
     });

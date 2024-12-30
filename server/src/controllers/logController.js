@@ -3,44 +3,36 @@ const ResponseHandler = require("../utils/responseHandler");
 const BaseController = require("./BaseController");
 const PaginationUtils = require("../utils/paginationUtils");
 const { BadRequestError } = require('../utils/apiError');
+const catchAsync = require('../utils/catchAsync');
 
 class LogController extends BaseController {
     constructor() {
         super(logService);
     }
 
-    async list(req, res, next) {
-        try {
-            const { status, ...query } = req.query;
-            const paginationParams = PaginationUtils.processPaginationParams(query);
-            const filters = PaginationUtils.cleanQueryParams(query);
+    list = catchAsync(async (req, res) => {
+        const { status, ...query } = req.query;
+        const paginationParams = PaginationUtils.processPaginationParams(query);
+        const filters = PaginationUtils.cleanQueryParams(query);
 
-            if (status) {
-                filters.status = parseInt(status);
-            }
-
-            const result = await this.service.findWithPagination(filters, paginationParams);
-            return ResponseHandler.success(res, result);
-        } catch (error) {
-            next(error);
+        if (status) {
+            filters.status = parseInt(status);
         }
-    }
 
-    async create(req, res, next) {
-        try {
-            const logs = req.body;
+        const result = await this.service.findWithPagination(filters, paginationParams);
+        return ResponseHandler.success(res, result);
+    });
 
-            if (!Array.isArray(logs)) {
-                throw new BadRequestError('日志格式错误, 应为数组');
-            }
+    create = catchAsync(async (req, res) => {
+        const logs = req.body;
 
-            const result = await this.service.create(logs);
-            return ResponseHandler.created(res, result);
-        } catch (error) {
-            next(error);
+        if (!Array.isArray(logs)) {
+            throw new BadRequestError('日志格式错误, 应为数组');
         }
-    }
 
+        const result = await this.service.create(logs);
+        return ResponseHandler.created(res, result);
+    });
 }
 
 module.exports = new LogController();

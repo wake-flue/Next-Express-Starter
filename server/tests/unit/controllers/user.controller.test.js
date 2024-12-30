@@ -10,6 +10,17 @@ const mongoose = require('mongoose');
 // 模拟 userService
 jest.mock('../../../src/services/userService');
 
+// 模拟 catchAsync
+jest.mock('../../../src/utils/catchAsync', () => (fn) => {
+  return async (req, res, next) => {
+    try {
+      await fn(req, res);
+    } catch (error) {
+      next(error);
+    }
+  };
+});
+
 describe('UserController', () => {
   let mockReq;
   let mockRes;
@@ -157,8 +168,8 @@ describe('UserController', () => {
 
       await userController.refreshToken(mockReq, mockRes, mockNext);
 
-      const error = new UnauthorizedError('请先登录');
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(UnauthorizedError));
+      expect(mockNext.mock.calls[0][0].message).toBe('请先登录');
       expect(mockRes.status).not.toHaveBeenCalled();
       expect(mockRes.json).not.toHaveBeenCalled();
     });
@@ -265,8 +276,8 @@ describe('UserController', () => {
       mockReq = {
         user: { id: 'userId' },
         body: {
-          oldPassword: 'OldTest123456',
-          newPassword: 'NewTest123456'
+          oldPassword: 'OldPass123',
+          newPassword: 'NewPass123'
         }
       };
     });
@@ -307,23 +318,18 @@ describe('UserController', () => {
     });
 
     it('should get users list successfully', async () => {
-      const mockResult = {
-        items: [
-          { _id: 'user1', email: 'user1@example.com' },
-          { _id: 'user2', email: 'user2@example.com' }
-        ],
-        total: 2,
-        page: 1,
-        pages: 1
+      const mockUsers = {
+        data: [{ _id: 'userId', email: 'test@example.com' }],
+        pagination: { total: 1, page: 1, pageSize: 20, totalPages: 1 }
       };
-      userService.findWithPagination.mockResolvedValue(mockResult);
+      userService.findWithPagination.mockResolvedValue(mockUsers);
 
       await userController.getUsers(mockReq, mockRes, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toHaveBeenCalledWith({
         success: true,
-        data: mockResult,
+        data: mockUsers,
         message: '操作成功'
       });
       expect(mockNext).not.toHaveBeenCalled();
@@ -341,7 +347,7 @@ describe('UserController', () => {
     });
   });
 
-  // 测试获取指定用户
+  // 测试获取指定用户信息
   describe('getUser', () => {
     const userId = new mongoose.Types.ObjectId().toString();
 
@@ -375,8 +381,8 @@ describe('UserController', () => {
 
       await userController.getUser(mockReq, mockRes, mockNext);
 
-      const error = new NotFoundError('用户不存在');
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(NotFoundError));
+      expect(mockNext.mock.calls[0][0].message).toBe('用户不存在');
       expect(mockRes.status).not.toHaveBeenCalled();
       expect(mockRes.json).not.toHaveBeenCalled();
     });

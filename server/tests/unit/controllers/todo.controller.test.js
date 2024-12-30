@@ -10,6 +10,17 @@ const mongoose = require('mongoose');
 // 模拟 todoService
 jest.mock('../../../src/services/todoService');
 
+// 模拟 catchAsync
+jest.mock('../../../src/utils/catchAsync', () => (fn) => {
+  return async (req, res, next) => {
+    try {
+      await fn(req, res);
+    } catch (error) {
+      next(error);
+    }
+  };
+});
+
 describe('TodoController', () => {
   let mockReq;
   let mockRes;
@@ -130,8 +141,8 @@ describe('TodoController', () => {
 
       await todoController.update(mockReq, mockRes, mockNext);
 
-      const error = new NotFoundError('资源不存在');
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(NotFoundError));
+      expect(mockNext.mock.calls[0][0].message).toBe('资源不存在');
       expect(mockRes.status).not.toHaveBeenCalled();
       expect(mockRes.json).not.toHaveBeenCalled();
     });
@@ -178,8 +189,8 @@ describe('TodoController', () => {
 
       await todoController.delete(mockReq, mockRes, mockNext);
 
-      const error = new NotFoundError('资源不存在');
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(NotFoundError));
+      expect(mockNext.mock.calls[0][0].message).toBe('资源不存在');
       expect(mockRes.status).not.toHaveBeenCalled();
       expect(mockRes.json).not.toHaveBeenCalled();
     });
@@ -226,8 +237,8 @@ describe('TodoController', () => {
 
       await todoController.detail(mockReq, mockRes, mockNext);
 
-      const error = new NotFoundError('资源不存在');
-      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(NotFoundError));
+      expect(mockNext.mock.calls[0][0].message).toBe('资源不存在');
       expect(mockRes.status).not.toHaveBeenCalled();
       expect(mockRes.json).not.toHaveBeenCalled();
     });
