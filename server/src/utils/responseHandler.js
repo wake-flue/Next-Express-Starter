@@ -33,6 +33,14 @@ class ResponseHandler {
         const formattedResponse = this.formatResponse(true, data, "创建成功");
         return res.status(HTTP_STATUS.CREATED).json(formattedResponse);
     }
+
+    static unauthorized(res, message = '未授权访问', data = null) {
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+            success: false,
+            message,
+            data
+        });
+    }
 }
 
 module.exports = ResponseHandler;

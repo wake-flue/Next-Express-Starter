@@ -10,6 +10,14 @@ const errorHandler = (err, req, res, next) => {
         stack: process.env.NODE_ENV === "development" ? err.stack : undefined
     };
 
+    // 处理未授权错误
+    if (err.name === "UnauthorizedError") {
+        return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+            success: false,
+            message: err.message || "未授权访问"
+        });
+    }
+
     // 处理mongoose验证错误
     if (err.name === "ValidationError") {
         const errors = Object.values(err.errors).map(error => error.message);
@@ -50,6 +58,14 @@ const errorHandler = (err, req, res, next) => {
             success: false,
             message: "无效的ID格式",
             error: err.message
+        });
+    }
+
+    // 处理自定义API错误
+    if (err.isOperational) {
+        return res.status(err.statusCode).json({
+            success: false,
+            message: err.message
         });
     }
 

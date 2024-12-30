@@ -13,6 +13,8 @@ const dbConfig = {
     collections: {
         LOGS: process.env.MONGODB_COLLECTION_LOGS || "logs",
         TODOS: process.env.MONGODB_COLLECTION_TODOS || "todos",
+        USERS: process.env.MONGODB_COLLECTION_USERS || "users",
+        TOKENS: process.env.MONGODB_COLLECTION_TOKENS || "tokens",
     },
     connectDB: async () => {
         await mongoose.connect(dbConfig.uri, dbConfig.options);

@@ -7,12 +7,14 @@ const appConfig = require("./modules/app");
 const dbConfig = require("./modules/db");
 const loggerConfig = require("./modules/logger");
 const swaggerConfig = require("./modules/swagger");
+const jwtConfig = require("./modules/jwt");
 
 const config = {
     app: appConfig,
     db: dbConfig,
     logger: loggerConfig,
     swagger: swaggerConfig,
+    jwt: jwtConfig,
 };
 
 module.exports = config;

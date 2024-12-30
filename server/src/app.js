@@ -4,6 +4,7 @@
 // 核心依赖
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require('cookie-parser');
 
 // Swagger文档
 const swaggerUi = require("swagger-ui-express");
@@ -61,8 +62,9 @@ app.get(`/api/${apiVersion}/docs.json`, (req, res) => {
 // 中间件注册
 //===========================
 // 通用中间件
-app.use(cors({ origin: corsOrigin }));
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(operationMiddleware());
 app.use(loggerMiddleware);
 
@@ -71,9 +73,11 @@ app.use(loggerMiddleware);
 //===========================
 const todosRouter = require("./api/todos");
 const logsRouter = require("./api/logs");
+const usersRouter = require("./api/users");
 
 app.use(`/api/${apiVersion}/todos`, todosRouter);
 app.use(`/api/${apiVersion}/logs`, logsRouter);
+app.use(`/api/${apiVersion}/users`, usersRouter);
 
 //===========================
 // 错误处理

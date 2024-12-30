@@ -35,6 +35,7 @@ const swaggerConfig = {
         path.join(__dirname, "../../api/docs/swagger.init.js"),
         path.join(__dirname, "../../api/docs/todo.swagger.js"),
         path.join(__dirname, "../../api/docs/log.swagger.js"),
+        path.join(__dirname, "../../api/docs/user.swagger.js"),
         path.join(__dirname, "../../api/**/*.js"),
         path.join(__dirname, "../../app.js"),
     ],
