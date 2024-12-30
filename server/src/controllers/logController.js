@@ -2,6 +2,7 @@ const logService = require("../services/logService");
 const ResponseHandler = require("../utils/responseHandler");
 const BaseController = require("./BaseController");
 const PaginationUtils = require("../utils/paginationUtils");
+const { BadRequestError } = require('../utils/apiError');
 
 class LogController extends BaseController {
     constructor() {
@@ -30,7 +31,7 @@ class LogController extends BaseController {
             const logs = req.body;
 
             if (!Array.isArray(logs)) {
-                return ResponseHandler.badRequest(res, "日志格式错误, 应为数组", new Error("日志格式错误, 应为数组"));
+                throw new BadRequestError('日志格式错误, 应为数组');
             }
 
             const result = await this.service.create(logs);

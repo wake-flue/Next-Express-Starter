@@ -4,6 +4,7 @@
  */
 const userController = require('../../../src/controllers/userController');
 const userService = require('../../../src/services/userService');
+const { UnauthorizedError, NotFoundError } = require('../../../src/utils/apiError');
 const mongoose = require('mongoose');
 
 // 模拟 userService
@@ -156,13 +157,10 @@ describe('UserController', () => {
 
       await userController.refreshToken(mockReq, mockRes, mockNext);
 
-      expect(mockRes.status).toHaveBeenCalledWith(401);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '请先登录',
-        data: null
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      const error = new UnauthorizedError('请先登录');
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
   });
 
@@ -377,13 +375,10 @@ describe('UserController', () => {
 
       await userController.getUser(mockReq, mockRes, mockNext);
 
-      expect(mockRes.status).toHaveBeenCalledWith(404);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '用户不存在',
-        data: null
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      const error = new NotFoundError('用户不存在');
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
 
     it('should handle get user error', async () => {

@@ -2,6 +2,7 @@ const userService = require('../services/userService');
 const ResponseHandler = require('../utils/responseHandler');
 const BaseController = require('./BaseController');
 const PaginationUtils = require('../utils/paginationUtils');
+const { UnauthorizedError, NotFoundError } = require('../utils/apiError');
 
 class UserController extends BaseController {
   constructor() {
@@ -59,7 +60,7 @@ class UserController extends BaseController {
     try {
       const { refreshToken } = req.cookies;
       if (!refreshToken) {
-        return ResponseHandler.unauthorized(res, '请先登录');
+        throw new UnauthorizedError('请先登录');
       }
 
       const userAgent = req.headers['user-agent'];
@@ -151,7 +152,7 @@ class UserController extends BaseController {
     try {
       const user = await this.service.findById(req.params.id);
       if (!user) {
-        return ResponseHandler.notFound(res, '用户不存在');
+        throw new NotFoundError('用户不存在');
       }
       return ResponseHandler.success(res, { user });
     } catch (error) {

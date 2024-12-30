@@ -4,6 +4,7 @@
  */
 const logController = require('../../../src/controllers/logController');
 const logService = require('../../../src/services/logService');
+const { BadRequestError, NotFoundError } = require('../../../src/utils/apiError');
 const mongoose = require('mongoose');
 
 // 模拟 logService
@@ -134,12 +135,10 @@ describe('LogController', () => {
 
       await logController.create(mockReq, mockRes, mockNext);
 
-      expect(mockRes.status).toHaveBeenCalledWith(400);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '日志格式错误, 应为数组',
-        data: null,
-      });
+      const error = new BadRequestError('日志格式错误, 应为数组');
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
       expect(logService.create).not.toHaveBeenCalled();
     });
 
@@ -193,13 +192,10 @@ describe('LogController', () => {
 
       await logController.detail(mockReq, mockRes, mockNext);
 
-      expect(mockRes.status).toHaveBeenCalledWith(404);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '资源不存在',
-        data: null,
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      const error = new NotFoundError('资源不存在');
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
 
     it('should handle error when getting log fails', async () => {

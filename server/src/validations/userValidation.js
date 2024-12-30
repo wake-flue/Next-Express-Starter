@@ -1,5 +1,6 @@
 const { body, param } = require('express-validator');
 const mongoose = require('mongoose');
+const { BadRequestError } = require('../utils/apiError');
 
 const userValidation = {
   // 注册验证
@@ -67,7 +68,7 @@ const userValidation = {
       .withMessage('新密码必须包含字母')
       .custom((value, { req }) => {
         if (value === req.body.oldPassword) {
-          throw new Error('新密码不能与原密码相同');
+          throw new BadRequestError('新密码不能与原密码相同');
         }
         return true;
       }),
@@ -78,7 +79,7 @@ const userValidation = {
     param('id')
       .custom((value) => {
         if (!mongoose.Types.ObjectId.isValid(value)) {
-          throw new Error('无效的用户ID');
+          throw new BadRequestError('无效的用户ID');
         }
         return true;
       }),

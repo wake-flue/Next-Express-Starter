@@ -1,5 +1,6 @@
 const ResponseHandler = require("../utils/responseHandler");
 const PaginationUtils = require("../utils/paginationUtils");
+const { NotFoundError } = require('../utils/apiError');
 
 class BaseController {
     constructor(service) {
@@ -23,7 +24,7 @@ class BaseController {
         try {
             const result = await this.service.findById(req.params.id);
             if (!result) {
-                return ResponseHandler.notFound(res, "资源不存在");
+                throw new NotFoundError('资源不存在');
             }
             return ResponseHandler.success(res, result);
         } catch (error) {
@@ -46,7 +47,7 @@ class BaseController {
         try {
             const result = await this.service.update(req.params.id, req.body);
             if (!result) {
-                return ResponseHandler.notFound(res, "资源不存在");
+                throw new NotFoundError('资源不存在');
             }
             return ResponseHandler.success(res, result);
         } catch (error) {
@@ -59,7 +60,7 @@ class BaseController {
         try {
             const result = await this.service.delete(req.params.id);
             if (!result) {
-                return ResponseHandler.notFound(res, "资源不存在");
+                throw new NotFoundError('资源不存在');
             }
             return ResponseHandler.success(res, null);
         } catch (error) {

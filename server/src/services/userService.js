@@ -2,7 +2,7 @@ const User = require('../models/userModel');
 const Token = require('../models/tokenModel');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
-const { ApiError } = require('../utils/apiError');
+const { BadRequestError, ForbiddenError, UnauthorizedError, NotFoundError } = require('../utils/apiError');
 const BaseService = require('./BaseService');
 const { parseDuration } = require('../utils/durationParser');
 
@@ -17,7 +17,7 @@ class UserService extends BaseService {
   async createUser(userData) {
     const existingUser = await this.model.findOne({ email: userData.email });
     if (existingUser) {
-      throw new ApiError(400, '该邮箱已被注册');
+      throw new BadRequestError('该邮箱已被注册');
     }
     
     const user = await this.create(userData);
@@ -31,11 +31,11 @@ class UserService extends BaseService {
   async loginUser(email, password, userAgent, ipAddress) {
     const user = await this.model.findOne({ email }).select('+password');
     if (!user || !(await user.comparePassword(password))) {
-      throw new ApiError(401, '邮箱或密码错误');
+      throw new UnauthorizedError('邮箱或密码错误');
     }
 
     if (!user.isActive) {
-      throw new ApiError(403, '账户已被禁用');
+      throw new ForbiddenError('账户已被禁用');
     }
 
     // 生成访问令牌
@@ -82,12 +82,12 @@ class UserService extends BaseService {
   async refreshToken(refreshToken, userAgent, ipAddress) {
     const tokenDoc = await Token.findOne({ token: refreshToken });
     if (!tokenDoc || !tokenDoc.isValid()) {
-      throw new ApiError(401, '无效的刷新令牌');
+      throw new UnauthorizedError('无效的刷新令牌');
     }
 
     const user = await this.findById(tokenDoc.userId);
     if (!user || !user.isActive) {
-      throw new ApiError(401, '用户不存在或已被禁用');
+      throw new UnauthorizedError('用户不存在或已被禁用');
     }
 
     // 生成新的访问令牌
@@ -106,7 +106,7 @@ class UserService extends BaseService {
   async getUserById(userId) {
     const user = await this.findById(userId);
     if (!user) {
-      throw new ApiError(404, '用户不存在');
+      throw new NotFoundError('用户不存在');
     }
     return user;
   }
@@ -117,7 +117,7 @@ class UserService extends BaseService {
   async updateUser(userId, updateData) {
     const user = await this.findById(userId);
     if (!user) {
-      throw new ApiError(404, '用户不存在');
+      throw new NotFoundError('用户不存在');
     }
 
     // 防止更新敏感字段
@@ -135,11 +135,11 @@ class UserService extends BaseService {
   async changePassword(userId, oldPassword, newPassword) {
     const user = await this.model.findById(userId).select('+password');
     if (!user) {
-      throw new ApiError(404, '用户不存在');
+      throw new NotFoundError('用户不存在');
     }
 
     if (!(await user.comparePassword(oldPassword))) {
-      throw new ApiError(400, '原密码错误');
+      throw new BadRequestError('原密码错误');
     }
 
     user.password = newPassword;
@@ -159,12 +159,10 @@ class UserService extends BaseService {
    */
   async findWithPagination(filters = {}, options = {}) {
     // 移除密码字段
-    const result = await super.findWithPagination(filters, {
+    return await super.findWithPagination(filters, {
       ...options,
       select: '-password'
     });
-    
-    return result;
   }
 }
 

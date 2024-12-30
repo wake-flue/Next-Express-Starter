@@ -4,6 +4,7 @@
  */
 const todoController = require('../../../src/controllers/todoController');
 const todoService = require('../../../src/services/todoService');
+const { NotFoundError } = require('../../../src/utils/apiError');
 const mongoose = require('mongoose');
 
 // 模拟 todoService
@@ -129,13 +130,10 @@ describe('TodoController', () => {
 
       await todoController.update(mockReq, mockRes, mockNext);
 
-      expect(mockRes.status).toHaveBeenCalledWith(404);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '资源不存在',
-        data: null,
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      const error = new NotFoundError('资源不存在');
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
 
     it('should handle error when updating todo fails', async () => {
@@ -180,13 +178,10 @@ describe('TodoController', () => {
 
       await todoController.delete(mockReq, mockRes, mockNext);
 
-      expect(mockRes.status).toHaveBeenCalledWith(404);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '资源不存在',
-        data: null,
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      const error = new NotFoundError('资源不存在');
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
 
     it('should handle error when deleting todo fails', async () => {
@@ -231,13 +226,10 @@ describe('TodoController', () => {
 
       await todoController.detail(mockReq, mockRes, mockNext);
 
-      expect(mockRes.status).toHaveBeenCalledWith(404);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        success: false,
-        message: '资源不存在',
-        data: null,
-      });
-      expect(mockNext).not.toHaveBeenCalled();
+      const error = new NotFoundError('资源不存在');
+      expect(mockNext).toHaveBeenCalledWith(error);
+      expect(mockRes.status).not.toHaveBeenCalled();
+      expect(mockRes.json).not.toHaveBeenCalled();
     });
 
     it('should handle error when getting todo fails', async () => {
