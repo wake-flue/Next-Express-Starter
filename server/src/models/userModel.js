@@ -5,20 +5,19 @@ const config = require("../config");
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
-        required: [true, "邮箱是必需的"],
+        required: true,
         unique: true,
         lowercase: true,
         trim: true,
     },
     password: {
         type: String,
-        required: [true, "密码是必需的"],
-        minlength: [6, "密码至少需要6个字符"],
+        required: true,
         select: false,
     },
     name: {
         type: String,
-        required: [true, "用户名是必需的"],
+        required: true,
         trim: true,
     },
     role: {
