@@ -5,7 +5,7 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../../../src/app');
-const Log = require('../../../src/models/LogModel');
+const Log = require('../../../src/models/logModel');
 const config = require('../../../src/config');
 
 const { apiVersion } = config.app;

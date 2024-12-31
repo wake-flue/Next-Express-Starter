@@ -2,7 +2,7 @@
  * Log 服务层单元测试
  * 测试 Log 服务层的所有业务逻辑功能
  */
-const Log = require('../../../src/models/LogModel');
+const Log = require('../../../src/models/logModel');
 const logService = require('../../../src/services/logService');
 const mongoose = require('mongoose');
 

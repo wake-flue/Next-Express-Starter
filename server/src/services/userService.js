@@ -8,7 +8,7 @@ const {
     UnauthorizedError,
     NotFoundError,
 } = require("../utils/apiError");
-const BaseService = require("./BaseService");
+const BaseService = require("./baseService");
 const { parseDuration } = require("../utils/durationParser");
 
 class UserService extends BaseService {

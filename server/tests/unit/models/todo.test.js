@@ -2,7 +2,7 @@
  * Todo 模型单元测试
  * 测试 Todo 模型的基本功能，包括创建、验证和更新机制
  */
-const Todo = require('../../../src/models/TodoModel');
+const Todo = require('../../../src/models/todoModel');
 const mongoose = require('mongoose');
 
 describe('Todo Model Test', () => {

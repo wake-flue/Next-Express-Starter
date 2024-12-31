@@ -1,5 +1,5 @@
-const Todo = require("../models/TodoModel");
-const BaseService = require("./BaseService");
+const Todo = require("../models/todoModel");
+const BaseService = require("./baseService");
 const PaginationUtils = require("../utils/paginationUtils");
 
 class TodoService extends BaseService {

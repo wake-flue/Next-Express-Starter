@@ -51,7 +51,7 @@ const logStorage = new LogStorage({
     LOG_MONGODB_EXPIRE_AFTER_SECONDS: loggerConfig.storage.mongodb.expireAfterSeconds,
 });
 
-// 获取配置好的 logger 实例
+// 获取配置好的 loggerConfig 实例
 const logger = logStorage.getLogger();
 
 // 添加颜色支持

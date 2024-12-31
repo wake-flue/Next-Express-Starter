@@ -1,6 +1,6 @@
 const userService = require("../services/userService");
 const ResponseHandler = require("../utils/responseHandler");
-const BaseController = require("./BaseController");
+const BaseController = require("./baseController");
 const PaginationUtils = require("../utils/paginationUtils");
 const { UnauthorizedError, NotFoundError } = require("../utils/apiError");
 const catchAsync = require("../utils/catchAsync");

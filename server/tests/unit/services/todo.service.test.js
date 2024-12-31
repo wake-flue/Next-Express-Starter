@@ -2,7 +2,7 @@
  * Todo 服务层单元测试
  * 测试 Todo 服务层的所有业务逻辑功能
  */
-const Todo = require('../../../src/models/TodoModel');
+const Todo = require('../../../src/models/todoModel');
 const todoService = require('../../../src/services/todoService');
 const mongoose = require('mongoose');
 

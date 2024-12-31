@@ -5,7 +5,7 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../../../src/app');
-const Todo = require('../../../src/models/TodoModel');
+const Todo = require('../../../src/models/todoModel');
 const config = require('../../../src/config');
 
 const { apiVersion } = config.app;

@@ -1,6 +1,6 @@
 const logService = require("../services/logService");
 const ResponseHandler = require("../utils/responseHandler");
-const BaseController = require("./BaseController");
+const BaseController = require("./baseController");
 const PaginationUtils = require("../utils/paginationUtils");
 const { BadRequestError } = require("../utils/apiError");
 const catchAsync = require("../utils/catchAsync");

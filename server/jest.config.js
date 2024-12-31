@@ -3,9 +3,9 @@ module.exports = {
   testMatch: ['**/tests/**/*.test.js'],
   collectCoverageFrom: [
     'src/**/*.js',
-    '!src/app.js',
+    '!src/appConfig.js',
     '!src/config/**/*.js',
-    '!src/middleware/swagger.js'
+    '!src/middleware/swaggerConfig.js'
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'clover'],

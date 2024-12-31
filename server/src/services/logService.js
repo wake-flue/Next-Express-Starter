@@ -1,5 +1,5 @@
-const Log = require("../models/LogModel");
-const BaseService = require("./BaseService");
+const Log = require("../models/logModel");
+const BaseService = require("./baseService");
 const PaginationUtils = require("../utils/paginationUtils");
 
 class LogService extends BaseService {

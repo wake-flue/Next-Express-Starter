@@ -71,9 +71,9 @@ app.use(loggerMiddleware);
 //===========================
 // API路由注册
 //===========================
-const todosRouter = require("./api/todos");
-const logsRouter = require("./api/logs");
-const usersRouter = require("./api/users");
+const todosRouter = require("./api/todosApi");
+const logsRouter = require("./api/logsApi");
+const usersRouter = require("./api/usersApi");
 
 app.use(`/api/${apiVersion}/todos`, todosRouter);
 app.use(`/api/${apiVersion}/logs`, logsRouter);

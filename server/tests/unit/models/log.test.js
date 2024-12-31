@@ -2,7 +2,7 @@
  * Log 模型单元测试
  * 测试 Log 模型的基本功能，包括创建、验证和更新机制
  */
-const Log = require('../../../src/models/LogModel');
+const Log = require('../../../src/models/logModel');
 const mongoose = require('mongoose');
 
 describe('Log Model Test', () => {
