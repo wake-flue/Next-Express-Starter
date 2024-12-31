@@ -41,7 +41,7 @@
  *           type: string
  *           format: date-time
  *           description: 更新时间
- * 
+ *
  *     LoginResponse:
  *       type: object
  *       properties:
@@ -50,7 +50,7 @@
  *         accessToken:
  *           type: string
  *           description: JWT访问令牌
- * 
+ *
  *     PaginatedResponse:
  *       type: object
  *       properties:
@@ -67,7 +67,7 @@
  *         pages:
  *           type: integer
  *           description: 总页数
- * 
+ *
  *     Error:
  *       type: object
  *       properties:
@@ -87,13 +87,13 @@
  *               message:
  *                 type: string
  *           description: 字段验证错误列表
- * 
+ *
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
- * 
+ *
  * @swagger
  * tags:
  *   name: User
@@ -514,4 +514,4 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
- */ 
+ */

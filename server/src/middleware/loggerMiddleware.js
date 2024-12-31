@@ -1,5 +1,10 @@
 const LogHandler = require("../utils/logHandler");
-const { HTTP_STATUS, OPERATIONS, STATUS_TO_OPERATION, RESOURCE_TYPES } = require("../constants/httpStatus");
+const {
+    HTTP_STATUS,
+    OPERATIONS,
+    STATUS_TO_OPERATION,
+    RESOURCE_TYPES,
+} = require("../constants/httpStatus");
 
 const loggerMiddleware = (req, res, next) => {
     const start = new Date();
@@ -20,7 +25,7 @@ const loggerMiddleware = (req, res, next) => {
             url: req.originalUrl,
             ip: req.ip,
             headers: req.headers,
-            query: req.query
+            query: req.query,
         };
 
         const responseInfo = {
@@ -33,20 +38,22 @@ const loggerMiddleware = (req, res, next) => {
         let operation = req.operation;
         if (res.statusCode >= HTTP_STATUS.BAD_REQUEST) {
             // 使用映射关系获取对应的operation，如果没有则使用默认值
-            operation = STATUS_TO_OPERATION[res.statusCode] ||
-                (res.statusCode >= HTTP_STATUS.INTERNAL_SERVER_ERROR ?
-                    OPERATIONS.ERROR_HANDLER :
-                    OPERATIONS.BAD_REQUEST);
+            operation =
+                STATUS_TO_OPERATION[res.statusCode] ||
+                (res.statusCode >= HTTP_STATUS.INTERNAL_SERVER_ERROR
+                    ? OPERATIONS.ERROR_HANDLER
+                    : OPERATIONS.BAD_REQUEST);
         }
 
         // 获取resourceType
         let resourceType = req.resourceType;
         if (!resourceType) {
-            resourceType = res.statusCode >= HTTP_STATUS.INTERNAL_SERVER_ERROR ? 
-                RESOURCE_TYPES.SERVER_ERROR :
-                res.statusCode >= HTTP_STATUS.BAD_REQUEST ?
-                    RESOURCE_TYPES.CLIENT_ERROR :
-                    RESOURCE_TYPES.SERVER;
+            resourceType =
+                res.statusCode >= HTTP_STATUS.INTERNAL_SERVER_ERROR
+                    ? RESOURCE_TYPES.SERVER_ERROR
+                    : res.statusCode >= HTTP_STATUS.BAD_REQUEST
+                      ? RESOURCE_TYPES.CLIENT_ERROR
+                      : RESOURCE_TYPES.SERVER;
         }
 
         // 获取业务错误
@@ -55,14 +62,14 @@ const loggerMiddleware = (req, res, next) => {
         const metadata = {
             operation: operation,
             resourceType: resourceType,
-            error: error
+            error: error,
         };
 
         LogHandler.logRequest(requestInfo, responseInfo, metadata);
     };
 
     // 错误处理
-    res.on('error', (err) => {
+    res.on("error", (err) => {
         error = err;
     });
 

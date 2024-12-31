@@ -66,13 +66,17 @@ class LogHandler {
         if (responseInfo.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
             // 对于500错误,如果没有显式的错误信息,创建一个
             if (!logData.error) {
-                logData.error = this.formatError(new Error(`Internal Server Error: ${responseInfo.message || 'Unknown error'}`));
+                logData.error = this.formatError(
+                    new Error(`Internal Server Error: ${responseInfo.message || "Unknown error"}`),
+                );
             }
             logger.error(message, logData);
         } else if (responseInfo.status >= HTTP_STATUS.BAD_REQUEST) {
             // 对于400错误,如果没有显式的错误信息,创建一个
             if (!logData.error) {
-                logData.error = this.formatError(new Error(`Client Error: ${responseInfo.message || 'Bad Request'}`));
+                logData.error = this.formatError(
+                    new Error(`Client Error: ${responseInfo.message || "Bad Request"}`),
+                );
             }
             logger.warn(message, logData);
         } else {

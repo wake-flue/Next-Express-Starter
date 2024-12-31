@@ -59,18 +59,22 @@ class LogService extends BaseService {
         const paginationWithDefault = {
             ...pagination,
             sortBy: pagination.sortBy || "timestamp",
-            sortOrder: pagination.sortOrder || "desc"
+            sortOrder: pagination.sortOrder || "desc",
         };
-        const result = await super.findWithPagination(query, paginationWithDefault, this.validSortFields);
+        const result = await super.findWithPagination(
+            query,
+            paginationWithDefault,
+            this.validSortFields,
+        );
         return {
             ...result,
-            filters: PaginationUtils.cleanQueryParams(filters)
+            filters: PaginationUtils.cleanQueryParams(filters),
         };
     }
 
     async create(logs) {
         // 确保每个日志都有timestamp
-        const logsWithTimestamp = logs.map(log => ({
+        const logsWithTimestamp = logs.map((log) => ({
             ...log,
             timestamp: log.timestamp || new Date(),
         }));

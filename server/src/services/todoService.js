@@ -5,7 +5,7 @@ const PaginationUtils = require("../utils/paginationUtils");
 class TodoService extends BaseService {
     constructor() {
         super(Todo);
-        this.validSortFields = ['title', 'createdAt', 'completed'];
+        this.validSortFields = ["title", "createdAt", "completed"];
     }
 
     // 构建Todo查询条件
@@ -28,7 +28,7 @@ class TodoService extends BaseService {
         const result = await super.findWithPagination(query, pagination, this.validSortFields);
         return {
             ...result,
-            filters: PaginationUtils.cleanQueryParams(filters)
+            filters: PaginationUtils.cleanQueryParams(filters),
         };
     }
 
@@ -47,7 +47,7 @@ class TodoService extends BaseService {
 
         // 移除未定义的字段
         Object.keys(updateData).forEach(
-            (key) => updateData[key] === undefined && delete updateData[key]
+            (key) => updateData[key] === undefined && delete updateData[key],
         );
 
         return await super.update(id, updateData);

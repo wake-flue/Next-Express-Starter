@@ -12,7 +12,8 @@ class BaseService {
         const sort = PaginationUtils.buildSortObject(sortBy, sortOrder, validSortFields);
 
         const total = await this.model.countDocuments(query);
-        const data = await this.model.find(query)
+        const data = await this.model
+            .find(query)
             .sort(sort)
             .skip((page - 1) * pageSize)
             .limit(pageSize);
@@ -27,8 +28,8 @@ class BaseService {
             },
             sort: {
                 sortBy,
-                sortOrder
-            }
+                sortOrder,
+            },
         };
     }
 
@@ -39,11 +40,7 @@ class BaseService {
     }
 
     async update(id, data) {
-        return await this.model.findByIdAndUpdate(
-            id, 
-            data, 
-            { new: true, runValidators: true }
-        );
+        return await this.model.findByIdAndUpdate(id, data, { new: true, runValidators: true });
     }
 
     async delete(id) {
@@ -55,4 +52,4 @@ class BaseService {
     }
 }
 
-module.exports = BaseService; 
+module.exports = BaseService;

@@ -8,45 +8,50 @@ const { todoValidation } = require("../validations/todoValidation");
 /**
  * 获取待办列表
  */
-router.get("/",
+router.get(
+    "/",
     operationMiddleware.setOperation("GET_TODOS", "Todo"),
-    todoController.list.bind(todoController)
+    todoController.list.bind(todoController),
 );
 
 /**
  * 获取待办详情
  */
-router.get("/:id",
+router.get(
+    "/:id",
     validate(todoValidation.todoById),
     operationMiddleware.setOperation("GET_TODO_DETAIL", "Todo"),
-    todoController.detail.bind(todoController)
+    todoController.detail.bind(todoController),
 );
 
 /**
  * 创建待办事项
  */
-router.post("/",
+router.post(
+    "/",
     validate(todoValidation.createTodo),
     operationMiddleware.setOperation("CREATE_TODO", "Todo"),
-    todoController.create.bind(todoController)
+    todoController.create.bind(todoController),
 );
 
 /**
  * 更新待办事项
  */
-router.put("/:id",
+router.put(
+    "/:id",
     validate(todoValidation.updateTodo),
     operationMiddleware.setOperation("UPDATE_TODO", "Todo"),
-    todoController.update.bind(todoController)
+    todoController.update.bind(todoController),
 );
 
 /**
  * 删除待办事项
  */
-router.delete("/:id",
+router.delete(
+    "/:id",
     validate(todoValidation.todoById),
     operationMiddleware.setOperation("DELETE_TODO", "Todo"),
-    todoController.delete.bind(todoController)
+    todoController.delete.bind(todoController),
 );
 
 module.exports = router;

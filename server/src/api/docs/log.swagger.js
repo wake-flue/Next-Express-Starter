@@ -100,7 +100,7 @@
  *             additionalData:
  *               type: object
  *               description: 其他自定义元数据
- * 
+ *
  *     LogList:
  *       type: object
  *       properties:
@@ -284,7 +284,7 @@
  *                     stack:
  *                       type: string
  *                       description: 错误堆栈(仅开发环境)
- * 
+ *
  *   post:
  *     tags: [Log]
  *     summary: 批量创建日志
@@ -360,7 +360,7 @@
  *                     details:
  *                       type: object
  *                       description: 详细错误信息
- * 
+ *
  * /api/v1/logs/{id}:
  *   get:
  *     tags: [Log]
@@ -441,4 +441,4 @@
  *                       description: 错误堆栈(仅开发环境)
  */
 
-module.exports = {}; 
+module.exports = {};

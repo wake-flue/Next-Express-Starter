@@ -16,7 +16,7 @@ class ResponseHandler {
 
     static error(res, message, error, status = HTTP_STATUS.INTERNAL_SERVER_ERROR) {
         res.locals.error = error;
-        
+
         const formattedResponse = this.formatResponse(false, null, message);
         return res.status(status).json(formattedResponse);
     }

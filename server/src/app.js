@@ -4,7 +4,7 @@
 // 核心依赖
 const express = require("express");
 const cors = require("cors");
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 
 // Swagger文档
 const swaggerUi = require("swagger-ui-express");

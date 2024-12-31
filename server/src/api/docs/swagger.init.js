@@ -131,7 +131,7 @@
  *               type: integer
  *               description: 最小长度限制
  *             maxLength:
- *               type: integer 
+ *               type: integer
  *               description: 最大长度限制
  *             pattern:
  *               type: string

@@ -32,7 +32,7 @@
  *           format: date-time
  *           description: 更新时间
  *           example: 2023-11-01T08:00:00Z
- * 
+ *
  *     TodoList:
  *       type: object
  *       properties:
@@ -186,7 +186,7 @@
  *                     operation: DATABASE_ERROR
  *                     message: 数据库查询失败
  *                     details: Connection timeout
- * 
+ *
  *   post:
  *     tags: [Todo]
  *     summary: 创建待办事项
@@ -261,7 +261,7 @@
  *                       - field: title
  *                         message: 标题长度必须在2-100字符之间
  *                         value: a
- * 
+ *
  * /api/v1/todos/{id}:
  *   get:
  *     tags: [Todo]
@@ -329,7 +329,7 @@
  *                     code: 404
  *                     operation: NOT_FOUND
  *                     message: 待办事项不存在
- * 
+ *
  *   put:
  *     tags: [Todo]
  *     summary: 更新待办事项
@@ -474,4 +474,4 @@
  *                     message: 待办事项不存在
  */
 
-module.exports = {}; 
+module.exports = {};

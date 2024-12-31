@@ -12,9 +12,9 @@ const generateOperation = (req) => {
 
     // 移除路径中的参数占位符和api/v1前缀
     const cleanPath = path
-        .replace(/^\/api\/v1/, '') // 移除api/v1前缀
-        .replace(/:[^/]+/g, '')
-        .replace(/\//g, '_');
+        .replace(/^\/api\/v1/, "") // 移除api/v1前缀
+        .replace(/:[^/]+/g, "")
+        .replace(/\//g, "_");
 
     // 生成operation格式: METHOD_PATH (大写)
     // 例如: GET_USERS, POST_USERS_CREATE

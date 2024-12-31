@@ -1,40 +1,43 @@
 const mongoose = require("mongoose");
 const config = require("../config");
 
-const tokenSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+const tokenSchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        token: {
+            type: String,
+            required: true,
+        },
+        type: {
+            type: String,
+            enum: ["refresh"],
+            default: "refresh",
+        },
+        expires: {
+            type: Date,
+            required: true,
+        },
+        isRevoked: {
+            type: Boolean,
+            default: false,
+        },
+        userAgent: {
+            type: String,
+            required: true,
+        },
+        ipAddress: {
+            type: String,
+            required: true,
+        },
     },
-    token: {
-        type: String,
-        required: true,
+    {
+        timestamps: true,
     },
-    type: {
-        type: String,
-        enum: ["refresh"],
-        default: "refresh",
-    },
-    expires: {
-        type: Date,
-        required: true,
-    },
-    isRevoked: {
-        type: Boolean,
-        default: false,
-    },
-    userAgent: {
-        type: String,
-        required: true,
-    },
-    ipAddress: {
-        type: String,
-        required: true,
-    },
-}, {
-    timestamps: true,
-});
+);
 
 // 创建复合索引
 tokenSchema.index({ userId: 1, token: 1 });
@@ -53,4 +56,4 @@ tokenSchema.methods.revoke = async function () {
 
 const Token = mongoose.model(config.db.collections.TOKENS, tokenSchema);
 
-module.exports = Token; 
+module.exports = Token;
