@@ -3,56 +3,8 @@ import { Badge } from 'components/ui/badge';
 import { Button } from 'components/ui/button';
 import { ArrowRight, Github, Sparkles, Star, GitBranch, Code2, Rocket } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect } from 'react';
-import confetti from 'canvas-confetti';
 
 export function HeroSection() {
-  useEffect(() => {
-    const duration = 1000;
-    const animationEnd = Date.now() + duration;
-    const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF'];
-
-    const shootConfetti = () => {
-      const timeLeft = animationEnd - Date.now();
-      
-      // 左下角喷射
-      confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 60,
-        origin: { x: 0, y: 1 },
-        colors: colors,
-        ticks: 100,
-        gravity: 0.8,
-        scalar: 1.2,
-        drift: -0.8,
-        startVelocity: 80,
-        decay: 0.9,
-      });
-      
-      // 右下角喷射
-      confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 60,
-        origin: { x: 1, y: 1 },
-        colors: colors,
-        ticks: 100,
-        gravity: 0.8,
-        scalar: 1.2,
-        drift: 0.8,
-        startVelocity: 80,
-        decay: 0.9,
-      });
-
-      if (timeLeft > 0) {
-        requestAnimationFrame(shootConfetti);
-      }
-    };
-
-    shootConfetti();
-  }, []);
-
   return (
     <div className="hero-gradient min-h-screen flex flex-col justify-between relative -mt-16">
       {/* 背景装饰 */}

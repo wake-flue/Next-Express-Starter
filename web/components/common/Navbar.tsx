@@ -26,26 +26,26 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-14">
           <div className="flex items-center">
             {/* Logo */}
             <Link 
               href="/" 
-              className="flex items-center gap-2 text-xl font-bold text-gray-900 hover:text-gray-600 transition-colors"
+              className="flex items-center gap-2 text-base font-semibold text-gray-900 hover:text-gray-600 transition-colors"
             >
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-white font-bold">
+              <div className="w-7 h-7 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                 N
               </div>
               Next-Express
             </Link>
 
             {/* Navigation Links */}
-            <div className="hidden sm:ml-10 sm:flex sm:space-x-4">
+            <div className="hidden sm:ml-8 sm:flex sm:space-x-2">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   href={item.path}
-                  className="relative px-3 py-2 text-sm font-medium text-gray-900 transition-colors hover:text-gray-600"
+                  className="relative px-3 py-1.5 text-sm font-medium text-gray-900 transition-colors hover:text-gray-600"
                 >
                   {item.label}
                   {isActive(item.path) && (
@@ -61,12 +61,12 @@ export function Navbar() {
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {/* GitHub */}
             <Button
               variant="ghost"
               size="sm"
-              className="hidden sm:flex items-center gap-2 text-gray-700 hover:text-gray-900"
+              className="hidden sm:flex items-center gap-1.5 text-gray-700 hover:text-gray-900 h-8"
               asChild
             >
               <a
@@ -83,7 +83,7 @@ export function Navbar() {
             <Button
               variant={isActive('/dashboard') ? 'default' : 'outline'}
               size="sm"
-              className="flex items-center gap-2 shadow-sm"
+              className="flex items-center gap-1.5 shadow-sm h-8"
               asChild
             >
               <Link href="/dashboard">

@@ -1,81 +1,85 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { LogsTable } from '@/components/features/system-logs/LogsTable';
 import { LogsFilter } from '@/components/features/system-logs/LogsFilter';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ScrollText } from 'lucide-react';
-
-// 示例数据
-const stats = [
-  {
-    label: '总日志数',
-    value: '289',
-    description: '最近30天'
-  },
-  {
-    label: '错误日志',
-    value: '12',
-    description: '需要关注'
-  },
-  {
-    label: '警告日志',
-    value: '45',
-    description: '需要留意'
-  }
-];
+import { AdvancedPagination } from '@/components/ui/pagination';
+import { useQuery } from '@tanstack/react-query';
+import { logsApi } from '@/lib/apis/service-logs';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function LogsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isFilterVisible, setIsFilterVisible] = useState(true);
+  
+  // 获取当前分页参数
+  const page = Number(searchParams.get('page')) || 1;
+  const pageSize = Number(searchParams.get('pageSize')) || 20;
+  
+  // 获取总记录数
+  const { data: logsData } = useQuery({
+    queryKey: ['logs', { page, pageSize }],
+    queryFn: () => logsApi.query({ page, pageSize }),
+  });
+  
+  // 处理分页变化
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', newPage.toString());
+    router.push(`?${params.toString()}`);
+  };
+
   return (
-    <div className="space-y-8">
-      {/* 页面标题 */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">系统日志</h1>
-        <p className="text-gray-500 mt-2">
-          查看和管理系统运行日志
-        </p>
+    <div className="flex flex-col h-full">
+      {/* 筛选器折叠按钮 */}
+      <div className="flex items-center justify-between mb-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsFilterVisible(!isFilterVisible)}
+          className="text-gray-500 hover:text-gray-700"
+        >
+          <span className="mr-2">筛选</span>
+          {isFilterVisible ? (
+            <ChevronUp className="h-4 w-4" />
+          ) : (
+            <ChevronDown className="h-4 w-4" />
+          )}
+        </Button>
       </div>
-
-      {/* 统计卡片 */}
-      <div className="grid gap-6 md:grid-cols-3">
-        {stats.map((stat, index) => (
-          <Card key={index}>
-            <CardContent className="pt-6">
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex flex-col gap-1">
-                <div className="text-sm font-medium text-gray-500">
-                  {stat.label}
-                </div>
-                <div className="text-xs text-gray-400">
-                  {stat.description}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      
+      {/* 日志筛选器 */}
+      <div className={cn(
+        "mb-2 overflow-hidden transition-all duration-200 ease-in-out",
+        isFilterVisible ? "h-auto opacity-100" : "h-0 opacity-0"
+      )}>
+        <LogsFilter />
       </div>
+      
+      {/* 日志表格 */}
+      <ScrollArea className={cn(
+        "transition-all duration-200 ease-in-out",
+        isFilterVisible ? "h-[calc(100vh-20rem)]" : "h-[calc(100vh-12rem)]"
+      )}>
+        <LogsTable />
+      </ScrollArea>
 
-      {/* 日志卡片 */}
-      <Card>
-        <CardHeader className="flex flex-row items-center gap-4">
-          <ScrollText className="w-8 h-8 text-blue-500" />
-          <div>
-            <CardTitle>日志列表</CardTitle>
-            <CardDescription>系统运行日志记录</CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {/* 日志筛选器 */}
-          <div className="mb-6">
-            <LogsFilter />
-          </div>
-          
-          {/* 日志表格 */}
-          <ScrollArea className="h-[600px]">
-            <LogsTable />
-          </ScrollArea>
-        </CardContent>
-      </Card>
+      {/* 分页控制器 */}
+      <div className="mt-2 flex justify-center">
+        <AdvancedPagination 
+          page={page}
+          pageSize={pageSize}
+          total={logsData?.pagination.total}
+          onChange={handlePageChange}
+          siblingsCount={2}
+          className="bg-white/50 backdrop-blur-sm py-1 px-2 rounded-lg"
+        />
+      </div>
     </div>
   );
 } 

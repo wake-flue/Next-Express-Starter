@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, AlertTriangle, Info, Bug, Download, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { LogLevel } from '@/utils/logger';
 import { logsApi } from '@/lib/apis/service-logs';
 import { ILogEntry } from '@/types/log';
+import { cn } from '@/lib/utils';
 
 // 日志级别图标映射
 const levelIcons = {
@@ -23,14 +25,29 @@ const levelIcons = {
 
 // 日志级别样式映射
 const levelStyles = {
-  [LogLevel.ERROR]: 'bg-red-100 text-red-800 hover:bg-red-200',
-  [LogLevel.WARN]: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
-  [LogLevel.INFO]: 'bg-blue-100 text-blue-800 hover:bg-blue-200',
-  [LogLevel.DEBUG]: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
+  [LogLevel.ERROR]: 'bg-red-50 text-red-700 ring-red-600/20',
+  [LogLevel.WARN]: 'bg-yellow-50 text-yellow-700 ring-yellow-600/20',
+  [LogLevel.INFO]: 'bg-blue-50 text-blue-700 ring-blue-600/20',
+  [LogLevel.DEBUG]: 'bg-gray-50 text-gray-700 ring-gray-600/20',
 };
 
 // 日志详情对话框
 function LogDetailDialog({ log }: { log: ILogEntry }) {
+  // 检查对象是否有有效内容
+  const hasContent = (obj: any) => {
+    if (!obj) return false;
+    if (typeof obj === 'string') return obj.trim().length > 0;
+    if (Array.isArray(obj)) return obj.length > 0;
+    if (typeof obj === 'object') {
+      return Object.values(obj).some(value => {
+        if (value === null || value === undefined) return false;
+        if (typeof value === 'string') return value.trim().length > 0;
+        return true;
+      });
+    }
+    return true;
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -38,57 +55,140 @@ function LogDetailDialog({ log }: { log: ILogEntry }) {
           <ExternalLink className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader className="pb-2">
-          <DialogTitle>日志详情</DialogTitle>
-          <DialogDescription className="text-sm">
-            查看日志的完整信息，包括时间、级别、来源和详细内容
-          </DialogDescription>
-        </DialogHeader>
-        <ScrollArea className="max-h-[600px]">
-          <div className="space-y-3 px-2">
-            {/* 基本信息 */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <div className="text-xs font-medium text-gray-500">级别</div>
-                <Badge variant="secondary" className={levelStyles[log.level]}>
-                  <span className="flex items-center gap-1">
-                    {levelIcons[log.level]}
-                    {log.level}
-                  </span>
+      <DialogContent className="w-[90vw] max-w-3xl max-h-[90vh] flex flex-col gap-0 p-0 overflow-hidden sm:w-4/5 md:w-3/4">
+        <div className="px-4 py-3 sm:px-6 sm:py-4 border-b">
+          <DialogHeader className="space-y-2">
+            <DialogTitle className="text-base sm:text-lg font-semibold">日志详情</DialogTitle>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <Badge variant="outline" className={cn(
+                'flex items-center gap-1 px-1.5 py-0.5 sm:px-2 sm:py-1 text-xs font-medium',
+                levelStyles[log.level]
+              )}>
+                {levelIcons[log.level]}
+                {log.level}
+              </Badge>
+              <Badge variant="outline" className="px-1.5 py-0.5 sm:px-2 sm:py-1 text-xs">
+                {format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss')}
+              </Badge>
+              {log.meta?.source && (
+                <Badge variant="outline" className="px-1.5 py-0.5 sm:px-2 sm:py-1 text-xs">
+                  {log.meta.source}
                 </Badge>
-              </div>
-              <div>
-                <div className="text-xs font-medium text-gray-500">时间</div>
-                <div className="text-sm">{format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss')}</div>
-              </div>
-              <div>
-                <div className="text-xs font-medium text-gray-500">来源</div>
-                <div className="text-sm">{log.source || '-'}</div>
-              </div>
-              <div>
-                <div className="text-xs font-medium text-gray-500">URL</div>
-                <div className="text-sm truncate">{log.url || '-'}</div>
-              </div>
+              )}
+              {log.meta?.environment && (
+                <Badge variant="outline" className="px-1.5 py-0.5 sm:px-2 sm:py-1 text-xs">
+                  {log.meta.environment}
+                </Badge>
+              )}
             </div>
+          </DialogHeader>
+        </div>
 
+        <ScrollArea className="flex-1 px-4 py-3 sm:px-6 sm:py-4 overflow-y-auto">
+          <div className="space-y-3 sm:space-y-4">
             {/* 消息内容 */}
-            <div>
-              <div className="text-xs font-medium text-gray-500 mb-1">消息</div>
-              <div className="bg-gray-50 p-2 rounded-md font-mono text-sm whitespace-pre-wrap">
-                {log.message}
-              </div>
-            </div>
-
-            {/* 元数据 */}
-            {log.metadata && (
-              <div>
-                <div className="text-xs font-medium text-gray-500 mb-1">元数据</div>
-                <div className="bg-gray-50 p-2 rounded-md font-mono text-sm">
-                  <pre>{JSON.stringify(log.metadata, null, 2)}</pre>
+            {hasContent(log.message) && (
+              <div className="space-y-1 sm:space-y-1.5">
+                <div className="text-xs sm:text-sm font-medium text-gray-500">消息</div>
+                <div className="p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-mono whitespace-pre-wrap border">
+                  {log.message}
                 </div>
               </div>
             )}
+
+            {/* 操作信息 */}
+            {hasContent(log.meta?.operation) && (
+              <div className="space-y-1 sm:space-y-1.5">
+                <div className="text-xs sm:text-sm font-medium text-gray-500">操作</div>
+                <div className="p-2 sm:p-3 rounded-lg text-xs sm:text-sm border">
+                  {log.meta.operation}
+                </div>
+              </div>
+            )}
+
+            {/* 请求信息 */}
+            {hasContent(log.meta?.requestInfo) && (
+              <div className="space-y-1 sm:space-y-1.5">
+                <div className="text-xs sm:text-sm font-medium text-gray-500">请求信息</div>
+                <div className="p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-mono border">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                    {log.meta.requestInfo?.method && <div>方法：{log.meta.requestInfo.method}</div>}
+                    {log.meta.requestInfo?.url && <div>路径：{log.meta.requestInfo.url}</div>}
+                    {log.meta.requestInfo?.ip && <div>IP：{log.meta.requestInfo.ip}</div>}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 响应信息 */}
+            {hasContent(log.meta?.responseInfo) && (
+              <div className="space-y-1 sm:space-y-1.5">
+                <div className="text-xs sm:text-sm font-medium text-gray-500">响应信息</div>
+                <div className="p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-mono border">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                    {log.meta.responseInfo?.status && <div>状态码：{log.meta.responseInfo.status}</div>}
+                    {log.meta.responseInfo?.duration !== undefined && <div>耗时：{log.meta.responseInfo.duration}ms</div>}
+                    {hasContent(log.meta.responseInfo?.message) && (
+                      <div className="col-span-1 sm:col-span-2">消息：{log.meta.responseInfo?.message}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 错误信息 */}
+            {hasContent(log.meta?.error) && (
+              <div className="space-y-1 sm:space-y-1.5">
+                <div className="text-xs sm:text-sm font-medium text-gray-500">错误信息</div>
+                <div className="p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-mono whitespace-pre-wrap border text-red-600">
+                  {log.meta.error?.name && <div>类型：{log.meta.error.name}</div>}
+                  {log.meta.error?.message && <div>消息：{log.meta.error.message}</div>}
+                  {hasContent(log.meta.error?.stack) && (
+                    <div className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs">
+                      堆栈：
+                      <div className="mt-1 pl-3 sm:pl-4 border-l-2 border-red-200">
+                        {log.meta.error?.stack}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* 客户端信息 */}
+            {hasContent(log.meta?.client) && (
+              <div className="space-y-1 sm:space-y-1.5">
+                <div className="text-xs sm:text-sm font-medium text-gray-500">客户端信息</div>
+                <div className="p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-mono border">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                    {log.meta.client?.browser && <div>浏览器：{log.meta.client.browser}</div>}
+                    {log.meta.client?.os && <div>操作系统：{log.meta.client.os}</div>}
+                    {log.meta.client?.device && <div>设备：{log.meta.client.device}</div>}
+                    {hasContent(log.meta.client?.url) && (
+                      <div className="col-span-1 sm:col-span-2">URL：{log.meta.client?.url}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 其他元数据 */}
+            {hasContent(log.meta?.additionalData) && (
+              <div className="space-y-1 sm:space-y-1.5">
+                <div className="text-xs sm:text-sm font-medium text-gray-500">其他信息</div>
+                <div className="p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-mono whitespace-pre-wrap border">
+                  {JSON.stringify(log.meta.additionalData, null, 2)}
+                </div>
+              </div>
+            )}
+
+            {/* 完整元数据 */}
+            <div className="space-y-1 sm:space-y-1.5">
+              <div className="text-xs sm:text-sm font-medium text-gray-500">完整元数据</div>
+              <div className="p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-mono whitespace-pre-wrap border">
+                {JSON.stringify(log.meta, null, 2)}
+              </div>
+            </div>
           </div>
         </ScrollArea>
       </DialogContent>
@@ -133,32 +233,6 @@ export function LogsTable() {
     }
   };
 
-  // 导出日志
-  const handleExport = () => {
-    if (!data?.data.length) return;
-
-    const csvContent = [
-      // CSV 头部
-      ['级别', '消息', '时间', '来源', '操作', '环境'].join(','),
-      // CSV 数据行
-      ...data.data.map(log => [
-        log.level,
-        `"${log.message.replace(/"/g, '""')}"`,
-        format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss'),
-        log.meta.source || '',
-        log.meta.operation || '',
-        log.meta.environment
-      ].join(','))
-    ].join('\n');
-
-    // 创建下载链接
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `logs_${format(new Date(), 'yyyyMMdd_HHmmss')}.csv`;
-    link.click();
-  };
-
   // 加载状态
   if (isLoading) {
     return (
@@ -175,7 +249,8 @@ export function LogsTable() {
   // 错误状态
   if (error) {
     return (
-      <div className="text-center py-8 text-red-500">
+      <div className="flex items-center justify-center py-8 text-red-500 gap-2">
+        <AlertCircle className="w-5 h-5" />
         加载日志数据失败
       </div>
     );
@@ -184,43 +259,27 @@ export function LogsTable() {
   // 空状态
   if (!data?.data.length) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        暂无日志数据
+      <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+        <ScrollArea className="w-12 h-12 mb-4 text-gray-400" />
+        <p>暂无日志数据</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* 工具栏 */}
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-gray-500">
-          共 {data.pagination.total} 条记录
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleExport}
-          disabled={!data?.data.length}
-          className="flex items-center gap-2"
-        >
-          <Download className="w-4 h-4" />
-          导出日志
-        </Button>
-      </div>
-
+    <div className="space-y-3">
       {/* 日志表格 */}
-      <div className="border rounded-md">
+      <div className="rounded-lg overflow-hidden bg-white/50 backdrop-blur-sm">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="hover:bg-transparent border-0">
               <TableHead className="w-[100px]">级别</TableHead>
               <TableHead>消息</TableHead>
               <TableHead 
-                className="w-[200px] cursor-pointer"
+                className="w-[180px] cursor-pointer"
                 onClick={() => handleSort('timestamp')}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   时间
                   {sortField === 'timestamp' && (
                     sortOrder === 'desc' ? 
@@ -229,70 +288,51 @@ export function LogsTable() {
                   )}
                 </div>
               </TableHead>
-              <TableHead className="w-[120px]">来源</TableHead>
+              <TableHead className="w-[100px]">来源</TableHead>
               <TableHead className="w-[120px]">操作</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.data.map((log) => (
-              <TableRow key={log._id} className="group">
-                <TableCell>
-                  <Badge variant="secondary" className={levelStyles[log.level]}>
-                    <span className="flex items-center gap-1">
+            <AnimatePresence>
+              {data.data.map((log, index) => (
+                <motion.tr
+                  key={log._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2, delay: index * 0.05 }}
+                  className="group hover:bg-gray-50/50 border-0"
+                >
+                  <TableCell className="py-2">
+                    <Badge variant="outline" className={cn(
+                      'flex w-fit items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium ring-1 ring-inset',
+                      levelStyles[log.level]
+                    )}>
                       {levelIcons[log.level]}
                       {log.level}
-                    </span>
-                  </Badge>
-                </TableCell>
-                <TableCell className="font-mono max-w-[400px] truncate">
-                  {log.message}
-                </TableCell>
-                <TableCell>
-                  {format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss')}
-                </TableCell>
-                <TableCell>{log.meta.source}</TableCell>
-                <TableCell>{log.meta.operation || '-'}</TableCell>
-                <TableCell>
-                  <LogDetailDialog log={log} />
-                </TableCell>
-              </TableRow>
-            ))}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="font-mono text-sm max-w-[400px] truncate py-2">
+                    {log.message}
+                  </TableCell>
+                  <TableCell className="text-sm py-2">
+                    {format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss')}
+                  </TableCell>
+                  <TableCell className="text-sm py-2">
+                    {log.meta.source}
+                  </TableCell>
+                  <TableCell className="text-sm py-2">
+                    {log.meta.operation || '-'}
+                  </TableCell>
+                  <TableCell className="py-2">
+                    <LogDetailDialog log={log} />
+                  </TableCell>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
           </TableBody>
         </Table>
-      </div>
-
-      {/* 分页 */}
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-gray-500">
-          第 {data.pagination.page} 页，每页 {data.pagination.pageSize} 条
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={data.pagination.page <= 1}
-            onClick={() => {
-              const params = new URLSearchParams(searchParams);
-              params.set('page', String(data.pagination.page - 1));
-              window.history.pushState(null, '', `?${params.toString()}`);
-            }}
-          >
-            上一页
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={data.pagination.page >= data.pagination.totalPages}
-            onClick={() => {
-              const params = new URLSearchParams(searchParams);
-              params.set('page', String(data.pagination.page + 1));
-              window.history.pushState(null, '', `?${params.toString()}`);
-            }}
-          >
-            下一页
-          </Button>
-        </div>
       </div>
     </div>
   );

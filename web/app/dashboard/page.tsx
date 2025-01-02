@@ -84,20 +84,12 @@ const quickActions = [
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
-      {/* 页面标题 */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">仪表盘</h1>
-        <p className="text-gray-500 mt-2">
-          查看系统运行状态和关键指标
-        </p>
-      </div>
-
       {/* 统计卡片 */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <Card key={index}>
+            <Card key={index} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="p-2 rounded-lg bg-gray-50">

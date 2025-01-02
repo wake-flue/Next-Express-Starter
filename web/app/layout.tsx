@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { logger } from '@/utils/logger';
+import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body>
         <QueryClientProvider client={queryClient}>
           {children}
+          <Toaster />
         </QueryClientProvider>
       </body>
     </html>
