@@ -2,35 +2,57 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Todo } from 'types/todo';
+import { Todo, TodoFilters, TodoSort, TodoPagination } from 'types/todo';
 import { todoApi } from '@/lib/apis/todo';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from 'components/ui/card';
 import { TodoStats } from '@/components/features/todos/TodoStats';
 import { TodoForm } from '@/components/features/todos/TodoForm';
-import { TodoFilters } from '@/components/features/todos/TodoFilters';
+import { TodoFilters as TodoFilterButtons } from '@/components/features/todos/TodoFilters';
 import { TodoItem } from '@/components/features/todos/TodoItem';
 import { ClipboardList } from 'lucide-react';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
+const DEFAULT_PAGE_SIZE = 20;
 
 export default function TodoPage() {
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  // 状态管理
+  const [filters, setFilters] = useState<TodoFilters>({});
+  const [sort, setSort] = useState<TodoSort>({
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+  });
+  const [pagination, setPagination] = useState<TodoPagination>({
+    page: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+  });
+  const [searchTitle, setSearchTitle] = useState('');
+  
   const queryClient = useQueryClient();
 
-  // 获取所有待办事项
-  const { data: todos = [], isLoading } = useQuery({
-    queryKey: ['todos'],
-    queryFn: todoApi.getAllTodos,
-  });
-
-  // 过滤后的待办事项
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === 'active') return !todo.completed;
-    if (filter === 'completed') return todo.completed;
-    return true;
+  // 获取待办事项列表
+  const { data: todoData, isLoading } = useQuery({
+    queryKey: ['todos', filters, sort, pagination],
+    queryFn: () => todoApi.getTodos({ ...filters, ...sort, ...pagination }),
   });
 
   // 统计信息
-  const totalTodos = todos.length;
-  const completedTodos = todos.filter((todo) => todo.completed).length;
+  const totalTodos = todoData?.pagination.total ?? 0;
+  const completedTodos = todoData?.data.filter((todo) => todo.completed).length ?? 0;
   const activeTodos = totalTodos - completedTodos;
 
   // 创建待办事项
@@ -69,6 +91,32 @@ export default function TodoPage() {
       id: todo._id,
       todo: { completed: !todo.completed },
     });
+  };
+
+  // 处理过滤器变更
+  const handleFilterChange = (filter: 'all' | 'active' | 'completed') => {
+    setFilters(filter === 'all' 
+      ? {} 
+      : { completed: filter === 'completed' }
+    );
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
+
+  // 处理搜索
+  const handleSearch = () => {
+    setFilters(prev => ({ ...prev, title: searchTitle }));
+    setPagination(prev => ({ ...prev, page: 1 }));
+  };
+
+  // 处理排序
+  const handleSortChange = (value: string) => {
+    const [sortBy, sortOrder] = value.split('-');
+    setSort({ sortBy: sortBy as TodoSort['sortBy'], sortOrder: sortOrder as 'asc' | 'desc' });
+  };
+
+  // 处理分页
+  const handlePageChange = (page: number) => {
+    setPagination(prev => ({ ...prev, page }));
   };
 
   if (isLoading) {
@@ -114,17 +162,41 @@ export default function TodoPage() {
             />
           </div>
 
-          {/* 过滤按钮 */}
-          <div className="mb-4">
-            <TodoFilters
-              currentFilter={filter}
-              onFilterChange={setFilter}
+          {/* 搜索和过滤区域 */}
+          <div className="mb-6 flex flex-col gap-4">
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <Input
+                  placeholder="搜索待办事项..."
+                  value={searchTitle}
+                  onChange={(e) => setSearchTitle(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                />
+              </div>
+              <Select
+                value={`${sort.sortBy}-${sort.sortOrder}`}
+                onValueChange={handleSortChange}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="排序方式" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="createdAt-desc">创建时间 (最新)</SelectItem>
+                  <SelectItem value="createdAt-asc">创建时间 (最早)</SelectItem>
+                  <SelectItem value="title-asc">标题 (A-Z)</SelectItem>
+                  <SelectItem value="title-desc">标题 (Z-A)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <TodoFilterButtons
+              currentFilter={!filters.completed ? 'all' : filters.completed ? 'completed' : 'active'}
+              onFilterChange={handleFilterChange}
             />
           </div>
 
           {/* 待办事项列表 */}
           <div className="space-y-2">
-            {filteredTodos.map((todo) => (
+            {todoData?.data.map((todo) => (
               <TodoItem
                 key={todo._id}
                 todo={todo}
@@ -134,16 +206,48 @@ export default function TodoPage() {
               />
             ))}
 
-            {filteredTodos.length === 0 && (
+            {todoData?.data.length === 0 && (
               <div className="text-center py-12 text-gray-500">
-                {filter === 'all'
+                {!filters.completed
                   ? '暂无待办事项'
-                  : filter === 'active'
-                  ? '暂无进行中的任务'
-                  : '暂无已完成的任务'}
+                  : filters.completed
+                  ? '暂无已完成的任务'
+                  : '暂无进行中的任务'}
               </div>
             )}
           </div>
+
+          {/* 分页 */}
+          {todoData && todoData.pagination.totalPages > 1 && (
+            <div className="mt-6">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => handlePageChange(Math.max(1, pagination.page! - 1))}
+                      className={pagination.page === 1 ? 'pointer-events-none opacity-50' : ''}
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: todoData.pagination.totalPages }, (_, i) => i + 1).map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => handlePageChange(page)}
+                        isActive={page === pagination.page}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(Math.min(todoData.pagination.totalPages, pagination.page! + 1))}
+                      className={pagination.page === todoData.pagination.totalPages ? 'pointer-events-none opacity-50' : ''}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -16,14 +16,23 @@ const levelOptions = [
   { value: LogLevel.DEBUG, label: '调试', icon: <Bug className="w-4 h-4 text-gray-500" /> },
 ];
 
+// 环境选项
+const environmentOptions = [
+  { value: 'all', label: '全部环境' },
+  { value: 'development', label: '开发环境' },
+  { value: 'production', label: '生产环境' },
+];
+
 export function LogsFilter() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
   const level = searchParams.get('level') || 'all';
+  const environment = searchParams.get('environment') || 'all';
   const startTime = searchParams.get('startTime') || '';
   const endTime = searchParams.get('endTime') || '';
+  const operation = searchParams.get('operation') || '';
 
   const handleFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -68,7 +77,7 @@ export function LogsFilter() {
   return (
     <Card className="p-4">
       <div className="space-y-4">
-        {/* 第一行：日志级别和快捷时间范围 */}
+        {/* 第一行：日志级别、环境和快捷时间范围 */}
         <div className="flex flex-wrap gap-4">
           <div className="w-[200px]">
             <Select
@@ -85,6 +94,24 @@ export function LogsFilter() {
                       {option.icon}
                       {option.label}
                     </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="w-[200px]">
+            <Select
+              value={environment}
+              onValueChange={(value) => handleFilter('environment', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="选择环境" />
+              </SelectTrigger>
+              <SelectContent>
+                {environmentOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -123,8 +150,17 @@ export function LogsFilter() {
           </div>
         </div>
 
-        {/* 第二行：自定义时间范围 */}
+        {/* 第二行：操作类型和时间范围 */}
         <div className="flex flex-wrap items-center gap-4">
+          <div className="w-[200px]">
+            <Input
+              value={operation}
+              onChange={(e) => handleFilter('operation', e.target.value)}
+              placeholder="操作类型"
+              className="w-full"
+            />
+          </div>
+
           <div className="flex-1 min-w-[200px]">
             <Input
               type="datetime-local"

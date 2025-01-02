@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { LogLevel } from '@/utils/logger';
-import { logsApi } from '@/apis/service-logs';
+import { logsApi } from '@/lib/apis/service-logs';
 import { ILogEntry } from '@/types/log';
 
 // 日志级别图标映射
@@ -21,7 +21,7 @@ const levelIcons = {
   [LogLevel.DEBUG]: <Bug className="w-4 h-4" />,
 };
 
-// 日志级别��式映射
+// 日志级别样式映射
 const levelStyles = {
   [LogLevel.ERROR]: 'bg-red-100 text-red-800 hover:bg-red-200',
   [LogLevel.WARN]: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
@@ -111,8 +111,16 @@ export function LogsTable() {
 
   // 获取日志数据
   const { data, isLoading, error } = useQuery({
-    queryKey: ['logs', { page, pageSize, level, startTime, endTime, sortField, sortOrder }],
-    queryFn: () => logsApi.query({ page, pageSize, level, startTime, endTime, sortField, sortOrder }),
+    queryKey: ['logs', { page, pageSize, level, startTime, endTime, sortBy: sortField, sortOrder }],
+    queryFn: () => logsApi.query({ 
+      page, 
+      pageSize, 
+      level, 
+      startTime, 
+      endTime, 
+      sortBy: sortField, 
+      sortOrder 
+    }),
   });
 
   // 处理排序
@@ -127,18 +135,19 @@ export function LogsTable() {
 
   // 导出日志
   const handleExport = () => {
-    if (!data?.logs.length) return;
+    if (!data?.data.length) return;
 
     const csvContent = [
       // CSV 头部
-      ['级别', '消息', '时间', '来源', 'URL'].join(','),
+      ['级别', '消息', '时间', '来源', '操作', '环境'].join(','),
       // CSV 数据行
-      ...data.logs.map(log => [
+      ...data.data.map(log => [
         log.level,
         `"${log.message.replace(/"/g, '""')}"`,
         format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss'),
-        log.source || '',
-        log.url || ''
+        log.meta.source || '',
+        log.meta.operation || '',
+        log.meta.environment
       ].join(','))
     ].join('\n');
 
@@ -173,7 +182,7 @@ export function LogsTable() {
   }
 
   // 空状态
-  if (!data?.logs.length) {
+  if (!data?.data.length) {
     return (
       <div className="text-center py-8 text-gray-500">
         暂无日志数据
@@ -186,13 +195,13 @@ export function LogsTable() {
       {/* 工具栏 */}
       <div className="flex justify-between items-center">
         <div className="text-sm text-gray-500">
-          共 {data.total} 条记录
+          共 {data.pagination.total} 条记录
         </div>
         <Button
           variant="outline"
           size="sm"
           onClick={handleExport}
-          disabled={!data?.logs.length}
+          disabled={!data?.data.length}
           className="flex items-center gap-2"
         >
           <Download className="w-4 h-4" />
@@ -220,12 +229,13 @@ export function LogsTable() {
                   )}
                 </div>
               </TableHead>
-              <TableHead className="w-[150px]">来源</TableHead>
+              <TableHead className="w-[120px]">来源</TableHead>
+              <TableHead className="w-[120px]">操作</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.logs.map((log) => (
+            {data.data.map((log) => (
               <TableRow key={log._id} className="group">
                 <TableCell>
                   <Badge variant="secondary" className={levelStyles[log.level]}>
@@ -241,7 +251,8 @@ export function LogsTable() {
                 <TableCell>
                   {format(new Date(log.timestamp), 'yyyy-MM-dd HH:mm:ss')}
                 </TableCell>
-                <TableCell>{log.source || '-'}</TableCell>
+                <TableCell>{log.meta.source}</TableCell>
+                <TableCell>{log.meta.operation || '-'}</TableCell>
                 <TableCell>
                   <LogDetailDialog log={log} />
                 </TableCell>
@@ -254,16 +265,16 @@ export function LogsTable() {
       {/* 分页 */}
       <div className="flex justify-between items-center">
         <div className="text-sm text-gray-500">
-          第 {page} 页，每页 {pageSize} 条
+          第 {data.pagination.page} 页，每页 {data.pagination.pageSize} 条
         </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
-            disabled={page <= 1}
+            disabled={data.pagination.page <= 1}
             onClick={() => {
               const params = new URLSearchParams(searchParams);
-              params.set('page', String(page - 1));
+              params.set('page', String(data.pagination.page - 1));
               window.history.pushState(null, '', `?${params.toString()}`);
             }}
           >
@@ -272,10 +283,10 @@ export function LogsTable() {
           <Button
             variant="outline"
             size="sm"
-            disabled={page * pageSize >= data.total}
+            disabled={data.pagination.page >= data.pagination.totalPages}
             onClick={() => {
               const params = new URLSearchParams(searchParams);
-              params.set('page', String(page + 1));
+              params.set('page', String(data.pagination.page + 1));
               window.history.pushState(null, '', `?${params.toString()}`);
             }}
           >
