@@ -22,7 +22,7 @@ class LogHandler {
         }, {});
 
         // 移除空值的字段
-        const finalMetadata = Object.entries({
+        return Object.entries({
             source: "backend",
             environment: process.env.NODE_ENV,
             ...cleanMetadata,
@@ -32,8 +32,6 @@ class LogHandler {
             }
             return acc;
         }, {});
-
-        return finalMetadata;
     }
 
     static formatError(error) {

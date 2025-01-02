@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const PaginationUtils = require("../utils/paginationUtils");
 
 class BaseService {

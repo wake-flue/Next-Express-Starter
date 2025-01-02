@@ -11,28 +11,28 @@ const authenticate = async (req, res, next) => {
         // 获取token
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedError("请先登录");
+            return next(new UnauthorizedError("请先登录"));
         }
 
         const token = authHeader.split(" ")[1];
         if (!token) {
-            throw new UnauthorizedError("请先登录");
+            return next(new UnauthorizedError("请先登录"));
         }
 
         // 验证token
         const decoded = jwt.verify(token, config.jwt.secret);
         if (!decoded) {
-            throw new UnauthorizedError("无效的访问令牌");
+            return next(new UnauthorizedError("无效的访问令牌"));
         }
 
         // 检查用户是否存在
         const user = await User.findById(decoded.id);
         if (!user) {
-            throw new UnauthorizedError("用户不存在");
+            return next(new UnauthorizedError("用户不存在"));
         }
 
         if (!user.isActive) {
-            throw new UnauthorizedError("账户已被禁用");
+            return next(new UnauthorizedError("账户已被禁用"));
         }
 
         // 将用户信息添加到请求对象

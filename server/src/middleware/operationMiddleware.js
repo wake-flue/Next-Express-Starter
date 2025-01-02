@@ -1,5 +1,3 @@
-const { OPERATIONS } = require("../constants/httpStatus");
-
 const generateOperation = (req) => {
     // 如果路由中已经定义了operation,则使用已定义的
     if (req.route && req.route.operation) {

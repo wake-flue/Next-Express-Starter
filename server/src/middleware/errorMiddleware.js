@@ -1,4 +1,3 @@
-const LogHandler = require("../utils/logHandler");
 const { HTTP_STATUS } = require("../constants/httpStatus");
 
 // 错误处理中间件
